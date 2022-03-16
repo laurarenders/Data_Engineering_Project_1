@@ -1,14 +1,39 @@
 try:
+  # Ophalen van websites waarvoor er geen link verkregen is
   from googlesearch import *
-  import os
-  import time
-  from urllib.error import HTTPError
-  import pandas as pd
-  from bs4 import BeautifulSoup as bs
-  import requests as req
   import re
+
+  #Gebruik voor de bulk van web scraping.
+  from bs4 import BeautifulSoup
+  from bs4 import BeautifulSoup as bs
+  from bs4 import Comment
+
+  # Gebruik van wiskundige berekening voor gelijkenissen in web-URLs.
+  from numpy import mean
+
+  # Gebruik van ophalen van webpagina's.
+  import requests as req
+
+  # Gebruik voor testen van website-URLs.
+  from urllib.parse import urlparse
+  from urllib.error import HTTPError
+
+  # Gebruik voor omzetten van CSV-files.
+  import pandas as pd
+
+  # Gebruik voor timer
+  import time
+
+  # Gebruik voor pad
+  import os
+
 except Exception as e:
   print(e)
+
+
+#################################################################################################################
+#################################################################################################################
+#################################################################################################################
 
 provencies = ["Antwerpen", "Limburg", "Oost-Vl", "Vl-Brabant", "West-Vl"] # , "Limburg", "Oost-Vlaanderen", "Vl-Brabant", "West-Vlaanderen"
 companyName = []
@@ -53,7 +78,30 @@ def checkCorrectWebsite(soup, companyName, companyAddress, url):
     if found == 1:
       break
       
-  return found == 1
+  return found
+  
+
+# Functie voor sitescraping. 
+# Gaat filteren op basis van welke tags er genegeerd mogen worden.
+def tag_visible(element):
+    if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
+        return False
+    if isinstance(element, Comment):
+        return False
+    return True
+
+# Functie voor sitescraping. 
+# Gaat de gevonden links gaan filteren op basis van likeliness (vb Facebook/Twitter/ander bedrijf negeren). Niet buiten de site gaan.
+def compareSite(adres1, adres2):
+    # Hoe gelijkaardig zijn de twee URL's?
+    n = mean(len(adres1) + len(adres2))
+    t = 0
+    for a, b in zip(adres1, adres2):
+        if a == b:
+            t += 1
+    return t/n > 0.4
+
+  
 
 def websitesOphalenViaNaam():
   for index in range(len(companyName)):
@@ -99,6 +147,84 @@ def websiteOphalenViaAddress(index):
       withoutWebsite.append(name)
       print(f"Without website: {withoutWebsite}")
 
+
+
+
+
+
+# Alle informatie van één website (inclusief alle resterende webpages) opslaan in een tekstbestand.
+def saveAsFile(naam, data):
+    try: 
+        # Opslaan onder /contents/
+        path = "C:/web_scraper/contents/"
+        file = naam + '.txt'
+        f = open(os.path.join(path,file), "w")
+        f.write("\n".join(data))
+        f.close()
+    except:
+        # Niet gelukt om bestand op te slaan
+        print(f'Niet gelukt om bestand voor {naam} aan te maken.')
+    # Pauze van drie seconden.
+    time.sleep(3)
+
+
+
+
+def siteScraper(adres, og, arr=set(), visited=set(), data=[]):
+    try:
+        # Op het einde van de rit
+        # Resultaten opslaan in een tekstbestand;
+        if len(arr) == len(visited) and len(visited) != 0:
+            naam = og.split('.')[1]
+            saveAsFile(naam, data)
+            print(f'Alles doorlopen van site {naam}')
+
+        # Niet meer dan 50 sites bezoeken.
+        elif len(visited) > 50:
+            naam = og.split('.')[1]
+            saveAsFile(naam, data)
+            print(f'Limiet bereikt voor {naam}')
+            # Naar volgende site gaan!!
+
+        else:
+            #Huidige site op 'bezoekt' plaatsen
+            visited.add(adres)
+
+            #Pagina ophalen en soup aanmaken.
+            page = req.get(adres, headers=useragent, timeout=10)
+            soup = BeautifulSoup(page.text, 'html.parser')
+
+            #Alle links ophalen
+            for link in soup.select('a[href]'):        
+                parsed_url = urlparse(link.get('href')).scheme
+                
+                #mail-links uitsluiten
+                if link.get('href').startswith('mailto'):
+                    pass
+                #Correct formaat?
+                elif parsed_url:
+                    if compareSite(adres, link.get('href')):
+                        arr.add(link.get('href'))
+                #
+                else:
+                    link = og + link.get('href')
+                    arr.add(link)
+
+            #Alle tekst ophalen en verzamelen in een array.
+            collect = soup.html.findAll(text=True)
+            rdb = filter(tag_visible, collect)
+            data.append("".join(t.strip() for t in rdb))
+
+            #Volgende site doorlopen
+            for site in arr:
+                if site not in visited:                
+                    #print(f'Starten met: {site}')
+                    siteScraper(site, og, arr, visited, data)
+                    
+    except:
+        pass
+        print(f"Site '{adres}' failed")
+
 for prov in provencies:
   dataOphalen(prov)
   websitesOphalenViaNaam()
@@ -123,3 +249,21 @@ for prov in provencies:
 # in voorkomt, dan steken we deze site in de array, anders zeggen we dat deze niet is gevonden en blijft de waarde op "N/A" staan.
 
 # Probleem: soms een timeout en mogelijks soms verkeerde website nemen
+
+
+## App: Sites scrapen op basis van tekstbestand. 
+## OPM: Moet hier dus twee maal gebeuren? Eén keer voor de gegeven websites en daarna nog een keer voor de gevonden websites?
+
+# Gekende sites doorlopen. Bij start tweemaal de site meegeven
+lines = open('websitesOfAllCompanies.txt', 'r').readlines()
+
+for site in lines:
+    adres = 'https://' + site.strip()
+    siteScraper(adres, adres)
+
+
+# Niet-gekende sites doorlopen.
+lines = open('websitesOfAllCompanies.txt', 'r').readlines()
+for site in lines:
+    adres = 'https://' + site.strip()
+    siteScraper(adres, adres)

@@ -10,6 +10,7 @@ from selenium.webdriver.chrome.service import Service
 import glob
 import os
 import shutil
+import PyPDF2
 
 # ################# #
 # Global variables #
@@ -85,6 +86,50 @@ def delete_file():
   print(to_be_deleted)
   os.remove(to_be_deleted)
 
+
+def scrape_jaarverslag():
+
+    #list_of_files = glob.glob("..\..\..\..\..\Downloads\*.pdf") #og
+    list_of_files = glob.glob("C:/Users/dylan/Downloads/*.pdf")
+    latest_file = max(list_of_files, key = os.path.getmtime)
+    read_pdf = PyPDF2.PdfFileReader(latest_file)
+
+    # get number of pages
+    NumPages = read_pdf.getNumPages()
+
+    # define keyterms
+    data = [None]*2
+
+    # Tekst ophalen
+    for i in range(0, NumPages):
+
+        PageObj = read_pdf.getPage(i)
+        Text = PageObj.extractText()
+
+        Text.replace('\n', ' ')
+
+        try:
+          # Omzet ophalen
+          if data[1] == None and i in [6,7,8] and 'Omzet' in Text:
+            arr = Text.split('\n')
+            index = arr.index('Omzet')
+            omzet = arr[index + 3]
+            data[1] = omzet
+        except:
+          print('Error: Omzet')
+
+        # Aantal werknemers ophalen.
+        try:  
+          if data[0] == None and i in [38,39,40] and 'Aantal werknemers' in Text:
+            arr = Text.split('\n')
+            index = arr.index('Aantal werknemers')
+            aantal = int(arr[index + 2]) + int(arr[index + 3])
+            data[0] = aantal
+        except:
+          print('Error: Aantal werknemers')
+        
+    print(data) 
+
 # ######################## #
 # Start van het programma #
 # ######################## #
@@ -93,9 +138,11 @@ companyNumbers = findCompanyNr()
 
 for nr in companyNumbers:
   download_pdf(nr.replace(" ", ""))
-
   time.sleep(3) # Om zeker te zijn dat de file gedownload is alvorens we ze gaan verplaatsen, anders verplaatsen we een verkeerde.
-
-  move_file()
-
+  scrape_jaarverslag()
+  
+  print(f'{nr} bekeken')
+  time.sleep(3)
+  
+  #move_file()
   # delete_file() # Uncomment dit om ruimte te besparen op je HDD, maar zorg dat je eerst scrapet.
