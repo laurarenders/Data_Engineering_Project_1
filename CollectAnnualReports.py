@@ -86,27 +86,66 @@ def delete_file():
   print(to_be_deleted)
   os.remove(to_be_deleted)
 
+# Gevonden gegevens opslaan in een CSV-bestand. 
+# Meegegeven -- ondernemingsnummer en array met daarin alle info 'gold'.
+def saveAsFile(ondnr, gold):
+    try: 
+        # Opslaan onder /contents/
+        path = "C:/DEPGroep1/jaarverslagen/"
+        file = 'results.csv'
+        
+        with open(os.path.join(path,file), "a+") as file_object:
+            # Move read cursor to the start of file.
+            file_object.seek(0)
 
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+
+            arr = [str(ondnr), str(gold[0]), str(gold[1])]
+
+            text = ";".join(arr)
+
+            # Append text at the end of file
+            file_object.write(text)
+    except:
+        # Niet gelukt om bestand op te slaan
+        print(f'Niet gelukt om de uitslag aan het bestand toe te voegen.')
+    
+    # Pauze van drie seconden.
+    time.sleep(3)
+
+
+# Geeft een array met 
 def scrape_jaarverslag():
 
-    #list_of_files = glob.glob("..\..\..\..\..\Downloads\*.pdf") #og
-    list_of_files = glob.glob("C:/Users/dylan/Downloads/*.pdf")
-    latest_file = max(list_of_files, key = os.path.getmtime)
-    read_pdf = PyPDF2.PdfFileReader(latest_file)
+    try:
+      #list_of_files = glob.glob("..\..\..\..\..\Downloads\*.pdf") #og
+      list_of_files = glob.glob("C:/Users/dylan/Downloads/*.pdf")
+      latest_file = max(list_of_files, key = os.path.getmtime)
+      read_pdf = PyPDF2.PdfFileReader(latest_file)
 
-    # get number of pages
-    NumPages = read_pdf.getNumPages()
+      # get number of pages
+      NumPages = read_pdf.getNumPages()
+    except:
+      print('Failed..')
 
     # define keyterms
-    data = [None]*2
+    # keytermsGenderGelijkheid = ["geslacht", "gendergelijkheid", "man/vrouw verhouding", "ratio man/vrouw", "salaris man/vrouw", "discriminatie", "genderneutraal"]
+
+    data = [None]*2 # Array met twee plaatsen maken; kan uitgebreid worden
 
     # Tekst ophalen
     for i in range(0, NumPages):
 
-        PageObj = read_pdf.getPage(i)
-        Text = PageObj.extractText()
-
-        Text.replace('\n', ' ')
+        try:
+          PageObj = read_pdf.getPage(i)
+          Text = PageObj.extractText()
+          Text.replace('\n', ' ')
+        
+        except:
+          print(f'Failed reading page {i}')
 
         try:
           # Omzet ophalen
@@ -120,6 +159,16 @@ def scrape_jaarverslag():
 
         # Aantal werknemers ophalen.
         try:  
+          if data[0] == None and 'Aantal werknemers' in Text:
+            arr = Text.split('\n')
+            index = arr.index('Aantal werknemers')
+            aantal = int(arr[index + 2]) + int(arr[index + 3])
+            data[0] = aantal
+        except:
+          print('Error: Aantal werknemers')
+
+
+        try:  
           if data[0] == None and i in [38,39,40] and 'Aantal werknemers' in Text:
             arr = Text.split('\n')
             index = arr.index('Aantal werknemers')
@@ -127,22 +176,26 @@ def scrape_jaarverslag():
             data[0] = aantal
         except:
           print('Error: Aantal werknemers')
-        
-    print(data) 
+    
+    return data
 
 # ######################## #
 # Start van het programma #
 # ######################## #
 
-companyNumbers = findCompanyNr()
+#xlsxToCSV()
+
+companyNumbers = findCompanyNr() # bedrijfsnummers ophalen
 
 for nr in companyNumbers:
   download_pdf(nr.replace(" ", ""))
   time.sleep(3) # Om zeker te zijn dat de file gedownload is alvorens we ze gaan verplaatsen, anders verplaatsen we een verkeerde.
-  scrape_jaarverslag()
+  data = scrape_jaarverslag() # Data van de scraper opslaan
   
+  saveAsFile(nr, data) # Naar bestand schrijven.
+
   print(f'{nr} bekeken')
   time.sleep(3)
   
   #move_file()
-  # delete_file() # Uncomment dit om ruimte te besparen op je HDD, maar zorg dat je eerst scrapet.
+  delete_file() # Uncomment dit om ruimte te besparen op je HDD, maar zorg dat je eerst scrapet.
