@@ -24,6 +24,9 @@ import os
 import random
 
 
+contentDIR = "C:/DEPGroep1/contents/"
+
+
 
 
 #################################################################################################################
@@ -65,7 +68,7 @@ def tekstbestandUitschrijven():
 def saveAsFile(naam, gold):
     try: 
         # Opslaan onder /contents/
-        path = "C:/DEPGroep1/contents/"
+        path = contentDIR
         file = naam + '.txt'
         
         with open(os.path.join(path,file), "a+") as file_object:
@@ -116,9 +119,9 @@ def siteScraper(adres, og, arr=set(), visited=set()):
             print(f'Alles doorlopen van site {naam}')
 
         # Niet meer dan 20 sites bezoeken.
-        elif len(visited) > 20:
-            naam = og.split('.')[1]
-            print(f'Limiet bereikt voor {naam}')
+        #elif len(visited) > 20:
+        #    naam = og.split('.')[1]
+        #    print(f'Limiet bereikt voor {naam}')
             # Naar volgende site gaan!!
 
         else:
@@ -149,6 +152,7 @@ def siteScraper(adres, og, arr=set(), visited=set()):
             texts = soup.findAll(text=True)
             visible_texts = filter(tag_visible, texts)  
             collectedData = " ".join(t.strip() for t in visible_texts)
+            collectedData = ' '.join(collectedData.split())
             saveAsFile(naam, collectedData)
 
             #data = soup.html.findAll()
