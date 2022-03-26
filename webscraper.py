@@ -23,9 +23,9 @@ import os
 # Generatie van willekeurige waarden (merendeel testen)
 import random
 
+import re
 
 contentDIR = "C:/DEPGroep1/contents/"
-
 
 
 
@@ -70,6 +70,10 @@ def saveAsFile(naam, gold):
         # Opslaan onder /contents/
         path = contentDIR
         file = naam + '.txt'
+
+        # sommige tekens kunnen niet in een tekstbestand gestoken worden
+        # speciale tekens eruit halen
+        gold = re.sub('[^a-zA-Z0-9 \n\.]', '', gold)
         
         with open(os.path.join(path,file), "a+") as file_object:
             # Move read cursor to the start of file.
@@ -81,7 +85,7 @@ def saveAsFile(naam, gold):
                 file_object.write("\n")
 
             # Append text at the end of file
-            file_object.write(gold)
+            file_object.write(str(gold))
     except:
         # Niet gelukt om bestand op te slaan
         print(f'Niet gelukt om bestand voor {naam} aan te maken.')
@@ -93,7 +97,7 @@ def saveAsFile(naam, gold):
 
 # Welke tags sluiten we uit bij het scrapen?
 def tag_visible(element):
-    if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
+    if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]', 'nav']:
         return False
     if isinstance(element, Comment):
         return False
@@ -118,10 +122,8 @@ def siteScraper(adres, og, arr=set(), visited=set()):
             naam = og.split('.')[1]
             print(f'Alles doorlopen van site {naam}')
 
-        # Niet meer dan 20 sites bezoeken.
-        #elif len(visited) > 20:
-        #    naam = og.split('.')[1]
-        #    print(f'Limiet bereikt voor {naam}')
+        elif len(visited) > 10:
+            pass
             # Naar volgende site gaan!!
 
         else:
@@ -194,7 +196,7 @@ def siteScraper(adres, og, arr=set(), visited=set()):
 #################################################################################################################
 #################################################################################################################
 
-tekstbestandUitschrijven()
+#tekstbestandUitschrijven()
 
 # Bij start tweemaal de site meegeven
 lines = open('websites.txt', 'r').readlines()

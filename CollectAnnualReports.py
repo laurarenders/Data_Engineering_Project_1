@@ -1,5 +1,6 @@
 import os
 from googlesearch import *
+from matplotlib.pyplot import text
 import pandas as pd
 import time
 from selenium import webdriver
@@ -11,6 +12,10 @@ import glob
 import os
 import shutil
 import PyPDF2
+
+# gebruiken voor het ophalen van de sector
+from bs4 import BeautifulSoup
+import requests as req
 
 # ################# #
 # Global variables #
@@ -39,6 +44,8 @@ def findCompanyNr():
 def download_pdf(companyNr):
   delay = 10
 
+  data = [None]
+
   # br = webdriver.Chrome(service = Service(ChromeDriverManager().install()))
   br = webdriver.Chrome(executable_path='./chromedriver.exe')
   br.get(url)
@@ -65,6 +72,17 @@ def download_pdf(companyNr):
             br.find_element(By.XPATH, xPath_download).click()
         count += 1
 
+    cels = br.find_elements_by_xpath('//td')
+
+    arr = []
+
+    for cel in cels:
+      arr.append(cel.text)
+    
+    data[0] = arr[25].split('-')[1].strip()
+    
+    return data
+
   except Exception as e:
     print(e)
     print('Failed...')
@@ -82,13 +100,17 @@ def move_file():
     move_file()
 
 def delete_file():
-  to_be_deleted = max(glob.glob(f"./annualReports/*"), key = os.path.getmtime)
-  print(to_be_deleted)
-  os.remove(to_be_deleted)
+  try:
+    list_of_files = glob.glob("C://Users/Dylan/Downloads/*")
+    latest_file = max(list_of_files, key = os.path.getmtime)
+    os.remove(latest_file)
+  except:
+    print('Niet gelukt om bestand te verwijderen.')
+  
 
 # Gevonden gegevens opslaan in een CSV-bestand. 
 # Meegegeven -- ondernemingsnummer en array met daarin alle info 'gold'.
-def saveAsFile(ondnr, gold):
+def saveAsFile(ondnr, goldPDF, goldNBB):
     try: 
         # Opslaan onder /contents/
         path = "C:/DEPGroep1/jaarverslagen/"
@@ -103,7 +125,7 @@ def saveAsFile(ondnr, gold):
             if len(data) > 0 :
                 file_object.write("\n")
 
-            arr = [str(ondnr), str(gold[0]), str(gold[1])]
+            arr = [str(ondnr).replace(' ', ''), str(goldPDF[0]), str(goldPDF[1]).replace('.',''), str(goldPDF[2]).replace('.',''), str(goldPDF[3]), str(goldPDF[4]), str(goldNBB[0])]
 
             text = ";".join(arr)
 
@@ -112,14 +134,12 @@ def saveAsFile(ondnr, gold):
     except:
         # Niet gelukt om bestand op te slaan
         print(f'Niet gelukt om de uitslag aan het bestand toe te voegen.')
-    
     # Pauze van drie seconden.
     time.sleep(3)
 
 
 # Geeft een array met 
 def scrape_jaarverslag():
-
     try:
       #list_of_files = glob.glob("..\..\..\..\..\Downloads\*.pdf") #og
       list_of_files = glob.glob("C:/Users/dylan/Downloads/*.pdf")
@@ -134,7 +154,8 @@ def scrape_jaarverslag():
     # define keyterms
     # keytermsGenderGelijkheid = ["geslacht", "gendergelijkheid", "man/vrouw verhouding", "ratio man/vrouw", "salaris man/vrouw", "discriminatie", "genderneutraal"]
 
-    data = [None]*2 # Array met twee plaatsen maken; kan uitgebreid worden
+    data = [None]*5 # Array met twee plaatsen maken; kan uitgebreid worden
+    #print(data)
 
     # Tekst ophalen
     for i in range(0, NumPages):
@@ -142,20 +163,9 @@ def scrape_jaarverslag():
         try:
           PageObj = read_pdf.getPage(i)
           Text = PageObj.extractText()
-          Text.replace('\n', ' ')
-        
+          Text.replace('\n', ' ').lower()
         except:
           print(f'Failed reading page {i}')
-
-        try:
-          # Omzet ophalen
-          if data[1] == None and i in [6,7,8] and 'Omzet' in Text:
-            arr = Text.split('\n')
-            index = arr.index('Omzet')
-            omzet = arr[index + 3]
-            data[1] = omzet
-        except:
-          print('Error: Omzet')
 
         # Aantal werknemers ophalen.
         try:  
@@ -167,16 +177,72 @@ def scrape_jaarverslag():
         except:
           print('Error: Aantal werknemers')
 
-
-        try:  
-          if data[0] == None and i in [38,39,40] and 'Aantal werknemers' in Text:
+        try:
+          # Omzet ophalen
+          if data[1] == None and 'Omzet' in Text:
             arr = Text.split('\n')
-            index = arr.index('Aantal werknemers')
-            aantal = int(arr[index + 2]) + int(arr[index + 3])
-            data[0] = aantal
+            index = arr.index('Omzet')
+            omzet = arr[index + 3]
+            data[1] = omzet
         except:
-          print('Error: Aantal werknemers')
-    
+          print('Error: Omzet')
+
+        # balanstotaal ophalen
+        try:  
+          if data[2] == None and 'TOTAAL VAN DE ACTIVA' in Text:
+            arr = Text.split('\n')
+            index = arr.index('TOTAAL VAN DE ACTIVA')
+            balanstotaal = str(arr[index + 2])
+            data[2] = balanstotaal
+        except:
+          print('Error: Balanstotaal')
+
+        
+        # framework voor duurzaamheidsrapportering
+        # ja of nee? indien ja --> GRI, IIRC, ISO
+        if  ' GRI ' in Text:
+          data[3] = 'GRI'
+        elif ' IIRC ' in Text:
+          data[3] = 'IIRC'
+        elif ' ISO ' in Text:
+          data[3] = 'ISO'
+        else:
+          if i == NumPages:
+            data[3] = 'Nee'
+
+         
+        # B2B of B2C -- woord
+        if 'B2C' in Text:
+          data[4] = 'B2C'
+        elif 'B2B' in Text:
+          data[4] = 'B2B'
+
+
+        ##
+        ## extra
+        #try:
+          # Omzet ophalen
+        #  if data[1] == None and i in [6,7,8] and 'Omzet' in Text:
+        #    arr = Text.split('\n')
+        #    index = arr.index('Omzet')
+        #    omzet = arr[index + 3]
+        #    data[1] = omzet
+        #except:
+        #  print('Error: Omzet')
+
+        ##
+        ## extra
+        #try:  
+        #  if data[0] == None and i in [38,39,40] and 'Aantal werknemers' in Text:
+        #    arr = Text.split('\n')
+        #    index = arr.index('Aantal werknemers')
+        #    aantal = int(arr[index + 2]) + int(arr[index + 3])
+        #    data[0] = aantal
+        #except:
+        #  print('Error: Aantal werknemers')
+
+        # Aantal werknemers ophalen.
+
     return data
 
 # ######################## #
@@ -188,11 +254,11 @@ def scrape_jaarverslag():
 companyNumbers = findCompanyNr() # bedrijfsnummers ophalen
 
 for nr in companyNumbers:
-  download_pdf(nr.replace(" ", ""))
+  nbb = download_pdf(nr.replace(" ", ""))
   time.sleep(3) # Om zeker te zijn dat de file gedownload is alvorens we ze gaan verplaatsen, anders verplaatsen we een verkeerde.
   data = scrape_jaarverslag() # Data van de scraper opslaan
   
-  saveAsFile(nr, data) # Naar bestand schrijven.
+  saveAsFile(nr, data, nbb) # Naar bestand schrijven.
 
   print(f'{nr} bekeken')
   time.sleep(3)
