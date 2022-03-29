@@ -22,7 +22,6 @@ import os
 
 # Generatie van willekeurige waarden (merendeel testen)
 import random
-
 import re
 
 contentDIR = "C:/DEPGroep1/contents/"

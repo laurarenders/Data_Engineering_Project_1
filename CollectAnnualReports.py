@@ -24,6 +24,43 @@ import requests as req
 provincies = ['Oost-Vl', 'West-Vl', 'Antwerpen', 'Limburg',  'Vl-Brabant']
 url = 'https://cri.nbb.be/bc9/web/catalog?execution=e1s1'
 
+
+# termen en sleutelwoorden
+gendergelijkheid = ["geslacht", "gendergelijkheid", "man/vrouw verhouding",
+                    "ratio man/vrouw", "salaris man/vrouw", "discriminatie", "genderneutraal"]
+implementatie_werknemersrechten = ["duurzaamheidscommissie", "rechten van werknemers", "arbeisrechten",
+                                   "rechten en plichten van werknemers", "arbeidsomstandigheden", "algemene rechten en plichten", "mensenrechten", "recht op vrijheid"]
+sociale_relaties = ["sociale relaties", "werkvloer",
+                    "solidair gedrag",  "betrokkenheid van werknemers"]
+werkgelegenheid = ["rekrutering", "rekruteringsbeleid", "rekruteringsverloop", "rekruteringstijd", "arbeidsovereenkomst", "werknemer", "werknemers", "diversiteitsbeleid", "loopbaan", "carrière",
+                   "carrièreontwikkeling", "groei opportuniteiten", "groeikansen", "doorstroommogelijkheden", "promotie", "demografisch", "personeelsbestand", "promotie", "human resources", "HR", "personeelsbeleid"]
+organisatie_op_het_werk = ["vergoeding", "beloning", "bonus", "stabiliteit van werknemers", "stabiliteit", "bedrijfscultuur", "loyaliteit van werknemers", "personeelsbehoud", "retentie personeel", "loyaliteitsbonus",
+                           "personeelsverloop", "leeftijdsstructuur", "afwezigheid", "afwezigheidsratio", "tevredenheid op het werk", "opvolgingsbeheer", "prestatiebeleid", "prestatie", "ziekte", "verzuim", "aanwezigheid", "aanwezigheidsratio"]
+gezondheid_en_veiligheid = ["preventie", "pesterij", "ongewenst gedrag", "klacht", "gezondheid van werknemers", "welzijn van werknemers", "managers", "arbeiders",
+                            "bedienden", "medewerkers", "incidenten op het werk", "incidenten", "discriminatie", "gezondheid en veiligheid op het werk", "intimidatie", "intimiderend gedrag", "vakbond"]
+opleidingsbeleid = ["opleidingsbeleid", "training", "opleiding", "vaardigheden van werknemers", "kennis van werknemers",
+                    "werknemersvaardigheden", "competenties van werknemer", "werknemercompetenties", "talent", "vakbekwaamheid"]
+SDg = ["kinderarbeid", "goede gezondheid en welzijn", "gender-gelijkheid", "waardig werk en economische groei",
+       "ongelijkheid verminderen", "vrede", "veiligheid en sterke publieke diensten"]
+
+gebruik_van_energiebronnen = ["energiebron", "energie vermindering",
+                              "energie reductie", "energie-intensiteit", "energiegebruik", "energieverbruik"]
+gebruik_van_waterbronnen = ["waterverbruik", "waterbron", "wateronttrekking",
+                            "waterafvoer", "watergebruik", "afvalwater", "grondwater"]
+emissies_van_broeikasgassen = ["broeikasgas", "CO2", "CO²", "CO2"]
+vervuilende_uitstoot = ["emissie", "uitstoot", "vervuiling", "zure regen", "uitstoot", "fijnstof",
+                        "fijn stof", "vervuilende stof", "filtertechniek", "luchtzuiverheid", "zuiveringstechnologie"]
+milieu_impact = ["impact", "milieu-impact", "impact op het milieu", "milieu impact", "milieu", "mobiliteit", "vervoer", "verplaatsing", "fiets",
+                 "auto", "staanplaatsen", "parking", "openbaar vervoer", "klimaatimpact", "impact op het klimaat", "klimaatsverandering", "green deal"]
+impact_op_gezondheid_en_veiligheid = [
+    "gezondheid", "reclyclage", "recycleren", "biodiversiteit", "afval", "afvalproductie", "vervuiling"]
+verdere_eisen_over_bepaalde_onderwerpen = [
+    "klimaat", "klimaatsverandering", "klimaatopwarming", "opwarming", "scope"]
+milieu_beleid = ["milieubeleid", "hernieuwbare energie", "verspilling",
+                 "milieucriteria", "planeet", "klimaatsbeleid", "milieunormen"]
+SDGs = ["schoon water en sanitair", "betaalbare en duurzame energie", "duurzame steden en gemeenschappen",
+        "verantwoorde consumptie en productie", "klimaatactie", "leven in het water", "leven op het land"]
+
 # ########## #
 # Functions #
 # ######### #
@@ -107,10 +144,9 @@ def delete_file():
   except:
     print('Niet gelukt om bestand te verwijderen.')
   
-
 # Gevonden gegevens opslaan in een CSV-bestand. 
 # Meegegeven -- ondernemingsnummer en array met daarin alle info 'gold'.
-def saveAsFile(ondnr, goldPDF, goldNBB):
+def saveAsFile(ondnr, dataPDF, goldNBB):
     try: 
         # Opslaan onder /contents/
         path = "C:/DEPGroep1/jaarverslagen/"
@@ -124,8 +160,18 @@ def saveAsFile(ondnr, goldPDF, goldNBB):
             data = file_object.read(100)
             if len(data) > 0 :
                 file_object.write("\n")
+                
+            # null-waarden vermijden
+            if dataPDF[1] == 'None':
+              dataPDF[1] == 0
 
-            arr = [str(ondnr).replace(' ', ''), str(goldPDF[0]), str(goldPDF[1]).replace('.',''), str(goldPDF[2]).replace('.',''), str(goldPDF[3]), str(goldPDF[4]), str(goldNBB[0])]
+            if dataPDF[2] == 'None':
+              dataPDF[2] == 0
+
+            if dataPDF[3] == 'None':
+              dataPDF[3] == 0
+
+            arr = [str(ondnr).replace(' ', ''), str(dataPDF[0]), str(dataPDF[1]).replace('.',''), str(dataPDF[2]).replace('.',''), str(dataPDF[3]), str(dataPDF[4]), str(goldNBB[0]).replace(';', ',')]
 
             text = ";".join(arr)
 
@@ -137,9 +183,98 @@ def saveAsFile(ondnr, goldPDF, goldNBB):
     # Pauze van drie seconden.
     time.sleep(3)
 
+def countKeywordOccurrences(textArr):
+    textArr = textArr.split(' ')
+
+    data = [0]*17
+
+    for keyword in gendergelijkheid:
+        data[0] += textArr.count(keyword)
+
+    for keyword in implementatie_werknemersrechten:
+        data[1] += textArr.count(keyword)
+
+    for keyword in sociale_relaties:
+        data[2] += textArr.count(keyword)
+
+    for keyword in werkgelegenheid:
+        data[3] += textArr.count(keyword)
+
+    for keyword in organisatie_op_het_werk:
+        data[4] += textArr.count(keyword)
+
+    for keyword in gezondheid_en_veiligheid:
+        data[5] += textArr.count(keyword)
+
+    for keyword in opleidingsbeleid:
+        data[6] += textArr.count(keyword)
+
+    for keyword in SDg:
+        data[7] += textArr.count(keyword)
+
+    for keyword in gebruik_van_energiebronnen:
+        data[8] += textArr.count(keyword)
+
+    for keyword in gebruik_van_waterbronnen:
+        data[9] += textArr.count(keyword)
+
+    for keyword in emissies_van_broeikasgassen:
+        data[10] += textArr.count(keyword)
+
+    for keyword in vervuilende_uitstoot:
+        data[11] += textArr.count(keyword)
+    
+    for keyword in milieu_impact:
+        data[12] += textArr.count(keyword)
+
+    for keyword in impact_op_gezondheid_en_veiligheid:
+        data[13] += textArr.count(keyword)
+
+    for keyword in verdere_eisen_over_bepaalde_onderwerpen:
+        data[14] += textArr.count(keyword)
+    
+    for keyword in milieu_beleid:
+        data[15] += textArr.count(keyword)
+
+    for keyword in SDGs:
+        data[16] += textArr.count(keyword)
+
+    return data
+
+def saveOccurrencesKeywords(ondnr, occData):
+  try: 
+        # Opslaan onder /contents/
+        path = "C:/DEPGroep1/jaarverslagen/"
+        file = 'occurrences.csv'
+
+        
+        with open(os.path.join(path,file), "a+") as file_object:
+
+            # Move read cursor to the start of file.
+            file_object.seek(0)
+
+            # If file is not empty then append '\n'
+            data = file_object.read(100)
+            if len(data) > 0 :
+                file_object.write("\n")
+
+            occData.insert(0, ondnr.replace(' ', ''))
+
+            text = ';'.join(str(x) for x in occData)
+
+            print(text)
+
+            # Append text at the end of file
+            file_object.write(text)
+  except:
+        # Niet gelukt om bestand op te slaan
+        print(f'Niet gelukt om de termen op te slaan.')
+        # Pauze van drie seconden.
+        time.sleep(3)
+
 
 # Geeft een array met 
-def scrape_jaarverslag():
+def scrape_jaarverslag(ondnr):
     try:
       #list_of_files = glob.glob("..\..\..\..\..\Downloads\*.pdf") #og
       list_of_files = glob.glob("C:/Users/dylan/Downloads/*.pdf")
@@ -151,99 +286,93 @@ def scrape_jaarverslag():
     except:
       print('Failed..')
 
-    # define keyterms
-    # keytermsGenderGelijkheid = ["geslacht", "gendergelijkheid", "man/vrouw verhouding", "ratio man/vrouw", "salaris man/vrouw", "discriminatie", "genderneutraal"]
+    data = [None]*5 # Array met vijf plaatsen maken; kan uitgebreid worden
+    voorkomens = [0]*17
 
-    data = [None]*5 # Array met twee plaatsen maken; kan uitgebreid worden
-    #print(data)
+    try:
+      # Tekst ophalen
+      for i in range(0, NumPages):
 
-    # Tekst ophalen
-    for i in range(0, NumPages):
+          try:
+            PageObj = read_pdf.getPage(i)
+            Text = PageObj.extractText()
+            Text.replace('\n', ' ').lower()
 
-        try:
-          PageObj = read_pdf.getPage(i)
-          Text = PageObj.extractText()
-          Text.replace('\n', ' ').lower()
-        except:
-          print(f'Failed reading page {i}')
+              # Aantal werknemers ophalen.
+            try:  
+              if data[0] == None and 'Aantal werknemers' in Text:
+                arr = Text.split('\n')
+                index = arr.index('Aantal werknemers')
+                aantal = int(arr[index + 2]) + int(arr[index + 3])
+                data[0] = aantal
+            except:
+              print('Error: Aantal werknemers')
 
-        # Aantal werknemers ophalen.
-        try:  
-          if data[0] == None and 'Aantal werknemers' in Text:
-            arr = Text.split('\n')
-            index = arr.index('Aantal werknemers')
-            aantal = int(arr[index + 2]) + int(arr[index + 3])
-            data[0] = aantal
-        except:
-          print('Error: Aantal werknemers')
+            try:
+              # Omzet ophalen
+              if data[1] == None and 'Omzet' in Text:
+                arr = Text.split('\n')
+                index = arr.index('Omzet')
+                omzet = arr[index + 3].replace('.','')
+                data[1] = omzet
+                if balanstotaal.isdecimal():
+                  data[2] = balanstotaal
+                else:
+                  data[2] = 0
+            except:
+              print('Error: Omzet')
 
-        try:
-          # Omzet ophalen
-          if data[1] == None and 'Omzet' in Text:
-            arr = Text.split('\n')
-            index = arr.index('Omzet')
-            omzet = arr[index + 3]
-            data[1] = omzet
-        except:
-          print('Error: Omzet')
+          # balanstotaal ophalen
+            try:  
+              if data[2] == None and 'TOTAAL VAN DE ACTIVA' in Text:
+                arr = Text.split('\n')
+                index = arr.index('TOTAAL VAN DE ACTIVA')
+                balanstotaal = arr[index + 2].replace('.','')
+                if balanstotaal.isdecimal():
+                  data[2] = balanstotaal
+                else:
+                  data[2] = 0
+            except:
+              print('Error: Balanstotaal')
 
-        # balanstotaal ophalen
-        try:  
-          if data[2] == None and 'TOTAAL VAN DE ACTIVA' in Text:
-            arr = Text.split('\n')
-            index = arr.index('TOTAAL VAN DE ACTIVA')
-            balanstotaal = str(arr[index + 2])
-            data[2] = balanstotaal
-        except:
-          print('Error: Balanstotaal')
+            try:
+              results = countKeywordOccurrences(Text)
+              
+              for i in range (0, 16):
+                voorkomens[i] += results[i]
 
-        
-        # framework voor duurzaamheidsrapportering
-        # ja of nee? indien ja --> GRI, IIRC, ISO
-        if  ' GRI ' in Text:
-          data[3] = 'GRI'
-        elif ' IIRC ' in Text:
-          data[3] = 'IIRC'
-        elif ' ISO ' in Text:
-          data[3] = 'ISO'
-        else:
-          if i == NumPages:
-            data[3] = 'Nee'
+            except:
+              print('Error: Tellen niet gelukt.')
 
-         
-        # B2B of B2C -- woord
-        if 'B2C' in Text:
-          data[4] = 'B2C'
-        elif 'B2B' in Text:
-          data[4] = 'B2B'
+          except:
+            print(f'Failed reading page {i}')
+          
+          # framework voor duurzaamheidsrapportering
+          # ja of nee? indien ja --> GRI, IIRC, ISO
+          if  ' GRI ' in Text:
+            data[3] = 'GRI'
+          elif ' IIRC ' in Text:
+            data[3] = 'IIRC'
+          elif ' ISO ' in Text:
+            data[3] = 'ISO'
+          else:
+            if i == (NumPages-1):
+              data[3] = 'Nee'
 
+          
+          # B2B of B2C -- woord
+          if 'B2C' in Text:
+            data[4] = 'B2C'
+          elif 'B2B' in Text:
+            data[4] = 'B2B'
+          else:
+            if i == (NumPages-1):
+              data[3] = 'Niet vermeld'
 
-        ##
-        ## extra
-        #try:
-          # Omzet ophalen
-        #  if data[1] == None and i in [6,7,8] and 'Omzet' in Text:
-        #    arr = Text.split('\n')
-        #    index = arr.index('Omzet')
-        #    omzet = arr[index + 3]
-        #    data[1] = omzet
-        #except:
-        #  print('Error: Omzet')
+    except:
+      print('niet gelukt om pagina te lezen')
 
-        ##
-        ## extra
-        #try:  
-        #  if data[0] == None and i in [38,39,40] and 'Aantal werknemers' in Text:
-        #    arr = Text.split('\n')
-        #    index = arr.index('Aantal werknemers')
-        #    aantal = int(arr[index + 2]) + int(arr[index + 3])
-        #    data[0] = aantal
-        #except:
-        #  print('Error: Aantal werknemers')
-
-        # Aantal werknemers ophalen.
-
-    return data
+    return [data,voorkomens]
 
 # ######################## #
 # Start van het programma #
@@ -254,11 +383,13 @@ def scrape_jaarverslag():
 companyNumbers = findCompanyNr() # bedrijfsnummers ophalen
 
 for nr in companyNumbers:
-  nbb = download_pdf(nr.replace(" ", ""))
+  scrapeteInfo = download_pdf(nr.replace(" ", ""))
   time.sleep(3) # Om zeker te zijn dat de file gedownload is alvorens we ze gaan verplaatsen, anders verplaatsen we een verkeerde.
-  data = scrape_jaarverslag() # Data van de scraper opslaan
+  data = scrape_jaarverslag(nr) # Data van de scraper opslaan
   
-  saveAsFile(nr, data, nbb) # Naar bestand schrijven.
+  saveAsFile(nr, data[0], scrapeteInfo) # Naar bestand schrijven.
+
+  saveOccurrencesKeywords(nr, data[1])
 
   print(f'{nr} bekeken')
   time.sleep(3)
