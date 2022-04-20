@@ -49,16 +49,33 @@ def xlsxToCSV():
 
 # Alle websites ophalen uit het CSV-bestand
 def tekstbestandUitschrijven():
-    provincies = ['Oost-Vl', 'West-Vl', 'Antwerpen', 'Limburg',  'Vl-Brabant']
+    oldpwd=os.getcwd()
+
+    path = "c:/DEPGroep1/CSV/"
+    os.chdir(path)
+    
+    df = pd.DataFrame()
+
+    for file in os.listdir():
+        if file.endswith('.csv'):
+            aux=pd.read_csv(file, error_bad_lines=False, delimiter=',')
+            df=df.append(aux)
+    
+    os.chdir(oldpwd)
+
+    df.to_csv(f"all.csv")
+    
     f = open("websites.txt", "w+")
-    for prov in provincies:
-        file = prov + '.csv'
-        df = pd.read_csv(file)
-        lijst = df["Web adres"].tolist()
-        
-        for rij in lijst:
-            if isinstance(rij, str) and rij.startswith('www') :
-                f.write(rij + "\n")
+    file = 'all.csv'
+    df = pd.read_csv(file)
+
+    cols = ['Ondernemingsnummer', 'Web adres']
+    df = df[cols]
+    filter = df['Web adres'].notnull()
+
+    df = df[filter]
+
+    df.to_csv('websites.csv', index=False)
 
 
 
@@ -69,6 +86,8 @@ def saveAsFile(naam, gold):
         # Opslaan onder /contents/
         path = contentDIR
         file = naam + '.txt'
+
+        print(file)
 
         # sommige tekens kunnen niet in een tekstbestand gestoken worden
         # speciale tekens eruit halen
@@ -112,19 +131,19 @@ def compareSite(adres1, adres2):
             t += 1
     return t/n > 0.4
 
-def siteScraper(adres, og, arr=set(), visited=set()):
+def siteScraper(adres, og, ondnr, arr=set(), visited=set()):
     try:
         naam = og.split('.')[1]
+
+        print(adres)
+
         # Op het einde van de rit
         # Resultaten opslaan in een tekstbestand;
         if len(arr) == len(visited) and len(visited) != 0:
             naam = og.split('.')[1]
-            print(f'Alles doorlopen van site {naam}')
-
-        elif len(visited) > 10:
+            #print(f'Alles doorlopen van site {naam}')
+        elif len(visited) > 20:
             pass
-            # Naar volgende site gaan!!
-
         else:
             #Huidige site op 'bezoekt' plaatsen
             visited.add(adres)
@@ -133,18 +152,16 @@ def siteScraper(adres, og, arr=set(), visited=set()):
             page = req.get(adres, headers=useragent, timeout=10)
             soup = BeautifulSoup(page.text, 'html.parser')
 
+            links = soup.select('a[href]')
+
             #Alle links ophalen
-            for link in soup.select('a[href]'):        
+            for link in links:    
                 parsed_url = urlparse(link.get('href')).scheme
                 
                 #mail-links uitsluiten
-                if link.get('href').startswith('mailto'):
-                    pass
-                #Correct formaat?
-                elif parsed_url:
+                if parsed_url:
                     if compareSite(adres, link.get('href')):
                         arr.add(link.get('href'))
-                #
                 else:
                     link = og + link.get('href')
                     arr.add(link)
@@ -154,55 +171,33 @@ def siteScraper(adres, og, arr=set(), visited=set()):
             visible_texts = filter(tag_visible, texts)  
             collectedData = " ".join(t.strip() for t in visible_texts)
             collectedData = ' '.join(collectedData.split())
-            saveAsFile(naam, collectedData)
-
-            #data = soup.html.findAll()
-            #for tag in data:
-            #    tagSearch = str(tag)
-            #    if zoekterm in tagSearch:
-            #        print(tag.get_text().strip())
-
-            #Alle P-tags ophalen
-            #ptag = "".join([p.text for p in soup.find_all('p')])
-            #print(ptag.strip())
-
-            #Alle mails van de site ophalen.
-            #mailtos = soup.select('a[href^=mailto]')
-            #for mail in mailtos:
-            #    mailadres = mail.get_text().strip()
-            #    print(mailadres)
-
-            #Extra opmerking: niet zo relevant
-            #Alle telefoonnummers van de site ophalen.
-            #data = soup.html.findAll()
-            #for tag in data:
-            #    tagSearch = str(tag)
-            #    if '+32' in tagSearch:
-            #        print(tag.get_text().strip())
+            
+            saveAsFile(ondnr.replace(' ', ''), collectedData)
 
             #Volgende site doorlopen
             for site in arr:
                 if site not in visited:                
                     #print(f'Starten met: {site}')
-                    siteScraper(site, og, arr, visited)
+                    siteScraper(site, og, ondnr, arr, visited)
                     
     except:
         pass
-        print(f"Site '{adres}' failed")
+        #print(f"Site '{adres}' failed")
 
 
 #################################################################################################################
-#################################################################################################################
+###########################                 Applicatie             ##############################################
 #################################################################################################################
 
 #tekstbestandUitschrijven()
 
 # Bij start tweemaal de site meegeven
-lines = open('websites.txt', 'r').readlines()
+lines = open('websites.csv', 'r').readlines()
 
 for site in lines:
-    adres = 'https://' + site.strip()
-    siteScraper(adres, adres, set(), set())
+    ondnr = site.split(',')[0].replace(' ', '').strip()
+    adres = 'https://' + site.split(',')[1].strip()
+    siteScraper(adres, adres, ondnr, set(), set())
     time.sleep(1)
     
 

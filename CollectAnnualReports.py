@@ -72,10 +72,10 @@ def xlsxToCSV():
 
 def findCompanyNr():
   for prov in provincies:
+    
     file = prov + '.csv'
     df = pd.read_csv(file)
     ls = df['Ondernemingsnummer'].tolist()
-    
   return ls
 
 def download_pdf(companyNr):
@@ -244,8 +244,8 @@ def countKeywordOccurrences(textArr):
 def saveOccurrencesKeywords(ondnr, occData):
   try: 
         # Opslaan onder /contents/
-        path = "C:/DEPGroep1/jaarverslagen/"
-        file = 'occurrences.csv'
+        path = "C:/DEPGroep1/scores/"
+        file = 'voorkomensPDF.csv'
 
         
         with open(os.path.join(path,file), "a+") as file_object:
