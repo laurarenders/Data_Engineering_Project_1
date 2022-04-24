@@ -1,4 +1,5 @@
 #Gebruik voor de bulk van web scraping.
+from base64 import decode
 from bs4 import BeautifulSoup
 from bs4 import Comment
 
@@ -25,8 +26,6 @@ import random
 import re
 
 contentDIR = "C:/DEPGroep1/contents/"
-
-
 
 #################################################################################################################
 #################################################################################################################
@@ -150,7 +149,7 @@ def siteScraper(adres, og, ondnr, arr=set(), visited=set()):
 
             #Pagina ophalen en soup aanmaken.
             page = req.get(adres, headers=useragent, timeout=10)
-            soup = BeautifulSoup(page.text, 'html.parser')
+            soup = BeautifulSoup(page.content, 'html.parser')
 
             links = soup.select('a[href]')
 
@@ -166,8 +165,9 @@ def siteScraper(adres, og, ondnr, arr=set(), visited=set()):
                     link = og + link.get('href')
                     arr.add(link)
 
-            soup = BeautifulSoup(page.text, 'html.parser')
-            texts = soup.findAll(text=True)
+            soup = BeautifulSoup(page.content, 'html.parser')
+            
+            texts = soup.body.findAll(text=True)
             visible_texts = filter(tag_visible, texts)  
             collectedData = " ".join(t.strip() for t in visible_texts)
             collectedData = ' '.join(collectedData.split())
@@ -182,14 +182,14 @@ def siteScraper(adres, og, ondnr, arr=set(), visited=set()):
                     
     except:
         pass
-        #print(f"Site '{adres}' failed")
+        print(f"Site '{adres}' failed")
 
 
 #################################################################################################################
 ###########################                 Applicatie             ##############################################
 #################################################################################################################
 
-#tekstbestandUitschrijven()
+tekstbestandUitschrijven()
 
 # Bij start tweemaal de site meegeven
 lines = open('websites.csv', 'r').readlines()
