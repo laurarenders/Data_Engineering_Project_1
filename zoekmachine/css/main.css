@@ -1,8 +1,17 @@
-table,
-th,
-td {
-  border: 1px solid black;
+body {
+  background-color: rgb(229, 223, 205);
+  text-align: center;
 }
+
+h1 {
+  margin-top: 15%;
+}
+
+.center {
+  margin-left: 35%;
+ 
+}
+
 table {
   width: 50%;
   border-collapse: collapse;
