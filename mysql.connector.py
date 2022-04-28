@@ -1,3 +1,4 @@
+from cProfile import run
 import pandas as pd
 import pymysql
 import logging
@@ -7,9 +8,9 @@ from sshtunnel import SSHTunnelForwarder
 ssh_host = "vichogent.be"
 ssh_username = "root"
 ssh_password = "DEPGroep1"
-database_username = "depuser"
-database_password = "DepUser123"
-database_name = "DEP1Database" 
+database_username = "root"
+database_password = "DEPGroep1"
+database_name = "DEP1DatabaseV3" 
 localhost = '127.0.0.1'
 
 def open_ssh_tunnel(verbose=False):
@@ -45,7 +46,8 @@ def mysql_connect():
         user=database_username,
         passwd=database_password,
         db=database_name,
-        port=tunnel.local_bind_port
+        port=tunnel.local_bind_port,
+        local_infile=True
     )
 
 def run_query(sql):
@@ -57,6 +59,35 @@ def run_query(sql):
     
     return pd.read_sql_query(sql, connection)
 
+
+def addWebContent():
+
+    qryKolomToevoegen = (
+        "ALTER TABLE Bedrijf "
+        "ADD gescrapeteData LONGTEXT;"
+    )
+
+    qryWebContentInlezen = (
+        "LOAD DATA LOCAL INFILE 'C:/DEPGroep1/scores/data.csv' "
+        "INTO TABLE Bedrijf "
+        "FIELDS TERMINATED BY ';' "
+        "LINES TERMINATED BY '\n' "
+        "IGNORE 1 ROWS;"
+        )
+        
+    #try:
+    #    cursor = connection.cursor()
+    #    cursor.execute(qryWebContentInlezen)
+    #except:
+    #    print('Niet gelukt')
+
+    qry = run_query('select * from Bedrijf')
+    print(qry)
+
+
+
 open_ssh_tunnel()
 mysql_connect()
-run_query("SELECT * FROM Bedrijf")
+
+# Gescrapete data doorvoeren naar de databank. 
+addWebContent()
