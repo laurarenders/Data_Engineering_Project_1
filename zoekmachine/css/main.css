@@ -1,18 +1,82 @@
+* {
+  font-family: inherit;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 body {
   background-color: rgb(229, 223, 205);
   text-align: center;
 }
 
 h1 {
+  margin: auto;
   margin-top: 15%;
+  margin-bottom: 50px;
+  font-size: 50px;
 }
 
-.center {
-  margin-left: 35%;
- 
+button {
+  font-size: 15px;
+  margin-top: 10px;
+  width: auto;
+  height: 25px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid black;
+  padding: 0 10px;
+}
+
+#companyname {
+  width: 50%;
+  border: 0;
+  border-bottom: 2px solid gray;
+  outline: 0;
+  font-size: 1.3rem;
+  color: black;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+#bedrijven {
+  margin: auto;
+  font-family: inherit;
 }
 
 table {
-  width: 50%;
-  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th {
+  padding-bottom: 5px;
+}
+
+td {
+  padding: 10px 50px 10px 50px;
+}
+
+.btnGedetailleerd {
+  width: auto;
+  text-align: center;
+  margin: 0 30px;
+}
+
+.linkToDetailedInfoEven {
+  color: white;
+}
+
+.linkToDetailedInfoOdd {
+  color: black;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button:hover {
+  background-color: gray;
+  border: none;
+  border-radius: 10%;
 }
