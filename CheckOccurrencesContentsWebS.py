@@ -47,22 +47,20 @@ def saveAsFile(data):
         path = "C:/DEPGroep1/scores/"
         file = 'VoorkomensWeb.csv'
 
-        print(data)
-
         path = path + file
 
         #print(path)
         
         with open(path, "a+") as file_object:
-            
-            #
+
             occData = ';'.join(str(x) for x in data[1])
-            voorkomens = [str(data[0]).split('.')[0], str(occData)]
-            
-            # aantal voorkomens
+
+            voorkomens = [str(data[0].split('.')[0]), str(occData)]
+
+            # Duurzaamheid
             text = ";".join(voorkomens) + '\n'
 
-            # tekst toevoegen aan bestand
+            # Append text at the end of file
             file_object.write(text)
         
     except:

@@ -356,7 +356,7 @@ def scrape_jaarverslag(ondnr):
           elif ' ISO ' in Text:
             data[3] = 'ISO'
           else:
-            if i == (NumPages-1):
+            if i == (NumPages-2):
               data[3] = 'Nee'
 
           
@@ -366,7 +366,7 @@ def scrape_jaarverslag(ondnr):
           elif 'B2B' in Text:
             data[4] = 'B2B'
           else:
-            if i == (NumPages-1):
+            if i == (NumPages-2):
               data[3] = 'Niet vermeld'
 
     except:
