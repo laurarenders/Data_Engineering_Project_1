@@ -188,8 +188,8 @@ def countKeywordOccurrences(textArr):
     textArr = " ".join(textArr)
     textArr = textArr.split('\n')
     textArr = " ".join(textArr)
-
-    print(textArr)
+    textArr.lower()
+    textArr = textArr.split(' ')
 
     data = [0]*17
 
