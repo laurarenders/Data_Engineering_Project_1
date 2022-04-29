@@ -71,58 +71,76 @@ def saveAsFile(data):
 
 def giveScore(ondnr, text):
     textArr = text.split(' ')
+    textArr = set(textArr)
     data = [0]*17
     
     for keyword in gendergelijkheid:
-        data[0] += textArr.count(keyword)
+        if keyword in textArr:    
+            data[0] += 1
 
     for keyword in implementatie_werknemersrechten:
-        data[1] += textArr.count(keyword)
+        if keyword in textArr:
+            data[1] += 1
 
     for keyword in sociale_relaties:
-        data[2] += textArr.count(keyword)
+        if keyword in textArr:
+            data[2] += 1
 
     for keyword in werkgelegenheid:
-        data[3] += textArr.count(keyword)
+        if keyword in textArr:
+            data[3] += 1
 
     for keyword in organisatie_op_het_werk:
-        data[4] += textArr.count(keyword)
+        if keyword in textArr:
+            data[4] += 1
 
     for keyword in gezondheid_en_veiligheid:
-        data[5] += textArr.count(keyword)
+        if keyword in textArr:
+            data[5] += 1
 
     for keyword in opleidingsbeleid:
-        data[6] += textArr.count(keyword)
+        if keyword in textArr:
+            data[6] += 1
 
     for keyword in SDG:
-        data[7] += textArr.count(keyword)
+        if keyword in textArr:
+            data[7] += 1
 
     for keyword in gebruik_van_energiebronnen:
-        data[8] += textArr.count(keyword)
+        if keyword in textArr:
+            data[8] += 1
 
     for keyword in gebruik_van_waterbronnen:
-        data[9] += textArr.count(keyword)
+        if keyword in textArr:
+            data[9] += 1
 
     for keyword in emissies_van_broeikasgassen:
-        data[10] += textArr.count(keyword)
+        if keyword in textArr:
+            data[10] += 1
 
     for keyword in vervuilende_uitstoot:
-        data[11] += textArr.count(keyword)
+        if keyword in textArr:
+            data[11] += 1
     
     for keyword in milieu_impact:
-        data[12] += textArr.count(keyword)
+        if keyword in textArr:
+            data[12] += 1
 
     for keyword in impact_op_gezondheid_en_veiligheid:
-        data[13] += textArr.count(keyword)
+        if keyword in textArr:
+            data[13] += 1
 
     for keyword in verdere_eisen_over_bepaalde_onderwerpen:
-        data[14] += textArr.count(keyword)
+        if keyword in textArr:
+            data[14] += 1
     
     for keyword in milieu_beleid:
-        data[15] += textArr.count(keyword)
+        if keyword in textArr:
+            data[15] += 1
 
     for keyword in SDGs:
-        data[16] += textArr.count(keyword)
+        if keyword in textArr:
+            data[16] += 1
 
     return([ondnr, data])
 

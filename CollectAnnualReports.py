@@ -73,7 +73,7 @@ def xlsxToCSV():
 def findCompanyNr():
   for prov in provincies:
     
-    file = prov + '.csv'
+    file = 'CSV/' + prov + '.csv'
     df = pd.read_csv(file)
     ls = df['Ondernemingsnummer'].tolist()
   return ls
@@ -184,60 +184,82 @@ def saveAsFile(ondnr, dataPDF, goldNBB):
     time.sleep(3)
 
 def countKeywordOccurrences(textArr):
-    textArr = textArr.split(' ')
+    
+    textArr = " ".join(textArr)
+    textArr = textArr.split('\n')
+    textArr = " ".join(textArr)
+
+    print(textArr)
 
     data = [0]*17
 
     for keyword in gendergelijkheid:
-        data[0] += textArr.count(keyword)
+      if keyword in textArr:
+        data[0] += 1
 
     for keyword in implementatie_werknemersrechten:
-        data[1] += textArr.count(keyword)
+      if keyword in textArr:
+        data[1] += 1
 
     for keyword in sociale_relaties:
-        data[2] += textArr.count(keyword)
+      if keyword in textArr:
+        data[2] += 1
 
     for keyword in werkgelegenheid:
-        data[3] += textArr.count(keyword)
+      if keyword in textArr:
+        data[3] += 1
 
     for keyword in organisatie_op_het_werk:
-        data[4] += textArr.count(keyword)
+      if keyword in textArr:
+        data[4] += 1
 
     for keyword in gezondheid_en_veiligheid:
-        data[5] += textArr.count(keyword)
+      if keyword in textArr:
+        data[5] += 1
 
     for keyword in opleidingsbeleid:
-        data[6] += textArr.count(keyword)
+      if keyword in textArr:
+        data[6] += 1
 
     for keyword in SDg:
-        data[7] += textArr.count(keyword)
+      if keyword in textArr:
+        data[7] += 1
 
     for keyword in gebruik_van_energiebronnen:
-        data[8] += textArr.count(keyword)
+      if keyword in textArr:
+        data[8] += 1
 
     for keyword in gebruik_van_waterbronnen:
-        data[9] += textArr.count(keyword)
+      if keyword in textArr:
+        data[9] += 1
 
     for keyword in emissies_van_broeikasgassen:
-        data[10] += textArr.count(keyword)
+      if keyword in textArr:
+        data[10] += 1
 
     for keyword in vervuilende_uitstoot:
-        data[11] += textArr.count(keyword)
+      if keyword in textArr:
+        data[11] += 1
     
     for keyword in milieu_impact:
-        data[12] += textArr.count(keyword)
+      if keyword in textArr:
+        data[12] += 1
 
     for keyword in impact_op_gezondheid_en_veiligheid:
-        data[13] += textArr.count(keyword)
+      if keyword in textArr:
+        data[13] += 1
 
     for keyword in verdere_eisen_over_bepaalde_onderwerpen:
-        data[14] += textArr.count(keyword)
+      if keyword in textArr:
+        data[14] += 1
     
     for keyword in milieu_beleid:
-        data[15] += textArr.count(keyword)
+      if keyword in textArr:
+        data[15] += 1
 
     for keyword in SDGs:
-        data[16] += textArr.count(keyword)
+      if keyword in textArr:
+        data[16] += 1
 
     return data
 
@@ -246,7 +268,6 @@ def saveOccurrencesKeywords(ondnr, occData):
         # Opslaan onder /contents/
         path = "C:/DEPGroep1/scores/"
         file = 'voorkomensPDF.csv'
-
         
         with open(os.path.join(path,file), "a+") as file_object:
 
@@ -275,6 +296,7 @@ def saveOccurrencesKeywords(ondnr, occData):
 
 # Geeft een array met 
 def scrape_jaarverslag(ondnr):
+
     try:
       #list_of_files = glob.glob("..\..\..\..\..\Downloads\*.pdf") #og
       list_of_files = glob.glob("C:/Users/dylan/Downloads/*.pdf")
@@ -287,16 +309,19 @@ def scrape_jaarverslag(ondnr):
       print('Failed..')
 
     data = [None]*5 # Array met vijf plaatsen maken; kan uitgebreid worden
-    voorkomens = [0]*17
 
     try:
+      
+      allText = ["."]*NumPages
+
       # Tekst ophalen
       for i in range(0, NumPages):
-
-          try:
+        
+        try:
             PageObj = read_pdf.getPage(i)
             Text = PageObj.extractText()
             Text.replace('\n', ' ').lower()
+            allText[i] = Text
 
               # Aantal werknemers ophalen.
             try:  
@@ -335,44 +360,36 @@ def scrape_jaarverslag(ondnr):
             except:
               print('Error: Balanstotaal')
 
-            try:
-              results = countKeywordOccurrences(Text)
-              
-              for i in range (0, 16):
-                voorkomens[i] += results[i]
-
-            except:
-              print('Error: Tellen niet gelukt.')
-
-          except:
+        except:
             print(f'Failed reading page {i}')
           
           # framework voor duurzaamheidsrapportering
           # ja of nee? indien ja --> GRI, IIRC, ISO
-          if  ' GRI ' in Text:
-            data[3] = 'GRI'
-          elif ' IIRC ' in Text:
-            data[3] = 'IIRC'
-          elif ' ISO ' in Text:
-            data[3] = 'ISO'
-          else:
-            if i == (NumPages-2):
-              data[3] = 'Nee'
+            if  ' GRI ' in Text:
+              data[3] = 'GRI'
+            elif ' IIRC ' in Text:
+              data[3] = 'IIRC'
+            elif ' ISO ' in Text:
+              data[3] = 'ISO'
+            else:
+              if i == (NumPages-2):
+                data[3] = 'Nee'
 
           
-          # B2B of B2C -- woord
-          if 'B2C' in Text:
-            data[4] = 'B2C'
-          elif 'B2B' in Text:
-            data[4] = 'B2B'
-          else:
-            if i == (NumPages-2):
-              data[3] = 'Niet vermeld'
-
+            # B2B of B2C -- woord
+            if 'B2C' in Text:
+              data[4] = 'B2C'
+            elif 'B2B' in Text:
+              data[4] = 'B2B'
+            else:
+              if i == (NumPages-2):
+                data[3] = 'Niet vermeld'
     except:
       print('niet gelukt om pagina te lezen')
 
-    return [data,voorkomens]
+    voorkomens = countKeywordOccurrences(allText)
+
+    return [data, voorkomens]
 
 # ######################## #
 # Start van het programma #
