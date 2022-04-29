@@ -59,9 +59,24 @@ def run_query(sql):
     
     return pd.read_sql_query(sql, connection)
 
+def dropConstraint():
+    try:
+        qry = (
+            "ALTER TABLE Bedrijf"
+            "DROP FOREIGN KEY BedrijfID"
+        )
+
+        run_query(qry)
+    except:
+        print('niet gelukt om key te droppen')
+
+
+def resetBedrijf():
+    cursor = connection.cursor()
+    cursor.execute('TRUNCATE TABLE Bedrijf')
+    cursor.close()
 
 def addWebContent():
-
     qryKolomToevoegen = (
         "ALTER TABLE Bedrijf "
         "ADD gescrapeteData LONGTEXT;"
@@ -75,14 +90,13 @@ def addWebContent():
         "IGNORE 1 ROWS;"
         )
         
-    #try:
-    #    cursor = connection.cursor()
-    #    cursor.execute(qryWebContentInlezen)
-    #except:
-    #    print('Niet gelukt')
-
-    qry = run_query('select * from Bedrijf')
-    print(qry)
+    try:
+        cursor = connection.cursor()
+        cursor.execute(qryWebContentInlezen)
+        cursor.close()
+        connection.commit()
+    except:
+        print('Niet gelukt')
 
 
 
@@ -90,4 +104,10 @@ open_ssh_tunnel()
 mysql_connect()
 
 # Gescrapete data doorvoeren naar de databank. 
-addWebContent()
+# addWebContent()
+
+# dropConstraint()
+# resetBedrijf()
+
+qry = run_query('select * from Bedrijf')
+print(qry)
