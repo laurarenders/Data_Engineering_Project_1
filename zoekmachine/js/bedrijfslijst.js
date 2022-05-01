@@ -26,7 +26,7 @@ function weergaveBedrijven(bedrijfsnaam) {
 
     let aGedetaileerd = document.createElement("a");
     aGedetaileerd.setAttribute("id", elem);
-    aGedetaileerd.href = `/gedetailleerd.html`;
+    aGedetaileerd.href = `./gedetailleerd.html`;
     aGedetaileerd.style.fontWeight = "900";
     if(ind % 2 == 0) {
       aGedetaileerd.setAttribute("class", "linkToDetailedInfoEven");
