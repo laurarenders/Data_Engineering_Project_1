@@ -2,7 +2,7 @@
 
 function filterOpBedrijven(bedrijfsnaam) {
   localStorage.setItem("zoekterm", bedrijfsnaam);
-  window.location.href="/bedrijfslijst.html";
+  window.location.href="./bedrijfslijst.html";
 };
 
 let zoeken = document.getElementById("submit");
