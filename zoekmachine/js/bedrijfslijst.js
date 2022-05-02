@@ -1,8 +1,12 @@
-"use strict";
+// import { connect } from "./connection.js";
+const connect = import("./connection.js");
 
 function weergaveBedrijven(bedrijfsnaam) {
+
+  const connection = connect;
+
   let bedrijven = [bedrijfsnaam, "HoGent", "Boston Dynamics", "UGent"]; // Bij connectie met db dit in commentaar, querry er onder uit commentaar
-  // let bedrijven = `SELECT * FROM Bedrijf b WHERE %b.naam% LIKE ${bedrijfsnaam}`; // Met spreadoperator nog omzetten naar array
+  // let bedrijven = bedrijven(bedrijfsnaam) // Met spreadoperator nog omzetten naar array
   // Controleren of bedrijf is gevonden, anders gepaste boodschap
 
   let title = document.getElementById("title");
@@ -64,12 +68,4 @@ function weergaveBedrijven(bedrijfsnaam) {
 
 let bedrijfsnaam = localStorage.getItem("zoekterm");
 
-// Connectie db
-const DATABASE_CLIENT = "mysql2";
-const DATABASE_NAME = "DEP1DatabaseV3";
-const DATABASE_HOST = "vichogent.be";
-const DATABASE_PORT = 40010;
-const DATABASE_USERNAME = "root";
-const DATABASE_PASSWORD = "DepGroep1";
-
-weergaveBedrijven(bedrijfsnaam);
+weergaveBedrijven(bedrijfsnaam)

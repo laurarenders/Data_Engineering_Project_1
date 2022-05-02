@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "The backend of our search engine",
+  "main": "connection.js",
+  
+  "scripts": {
+    "start": "nodemon ./js/connection.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "koa": "^2.13.4",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.15"
+  }
+}

@@ -67,12 +67,22 @@ td {
   color: white;
 }
 
+.linkToDetailedInfoEven:hover {
+  color: white;
+  text-decoration: underline;
+}
+
 .linkToDetailedInfoOdd {
   color: black;
 }
 
-a:hover {
+.linkToDetailedInfoOdd:hover {
+  color: black;
   text-decoration: underline;
+}
+
+a {
+  text-decoration: none;
 }
 
 button:hover {
