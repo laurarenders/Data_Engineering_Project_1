@@ -5,13 +5,13 @@ function weergaveBedrijven(sector) {
 
   const connection = connect;
 
-  let bedrijven = [sector, "HoGent", "Boston Dynamics", "UGent"]; // Bij connectie met db dit in commentaar, querry er onder uit commentaar
+  let bedrijven = ["Toerisme", "ICT", "Transport"]; // Bij connectie met db dit in commentaar, querry er onder uit commentaar
   // let bedrijven = bedrijven(bedrijfsnaam) // Met spreadoperator nog omzetten naar array
   // Controleren of bedrijf is gevonden, anders gepaste boodschap
 
   let title = document.getElementById("title");
   let h1 = document.createElement("h1");
-  let text = document.createTextNode(`Bedrijven die in sector "${sector}" zitten`);
+  let text = document.createTextNode(`Sectoren die "${sector}" bevatten`);
 
   h1.append(text);
   title.append(h1);
@@ -39,16 +39,16 @@ function weergaveBedrijven(sector) {
     }
 
     let tdGemeente = document.createElement("td");
-    let gemeente = document.createTextNode("Gemeente van " + elem); // Wordt de querry om de gemeente uit het bedrijf te halen
+    let gemeente = document.createTextNode(elem); // Wordt de querry om de gemeente uit het bedrijf te halen
     tdGemeente.append(gemeente);
 
     let tdBedrijf = document.createElement("td");
-    let bedrijf = document.createTextNode(elem);
+    let bedrijf = document.createTextNode("");
     tdBedrijf.append(bedrijf);
     aGedetaileerd.append(tdBedrijf)
 
     let tdOndernemingsnummer = document.createElement("td");
-    let ondernemingsnummer = document.createTextNode("Ondernemingsnummer van " + elem); // Wordt de querry om de gemeente uit het bedrijf te halen
+    let ondernemingsnummer = document.createTextNode(""); // Wordt de querry om de gemeente uit het bedrijf te halen
     tdOndernemingsnummer.append(ondernemingsnummer);
 
     nieuweRij.append(tdGemeente);
