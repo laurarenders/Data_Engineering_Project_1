@@ -76,6 +76,35 @@ def resetBedrijf():
     cursor.execute('TRUNCATE TABLE Bedrijf')
     cursor.close()
 
+def addOrganisatorischeKenmerken():
+    qryUpdateWhere = (
+        "UPDATE Bedrijf b "
+        "INNER JOIN tempOrganisatorischeKenmerken t "
+        "ON t.BedrijfID = b.BedrijfID "
+        "SET b.Omzet = t.Omzet, "
+        "b.AantalWerknemers = t.AantalWerknemers, "
+        "b.Balanstotaal = t.Balanstotaal, "
+        "b.SoortBusiness = t.SoortBusiness, "
+        "b.Framework = t.Framework;"
+    )
+
+    qryTempTableFill = (
+        "LOAD DATA LOCAL INFILE 'C:/DEPGroep1/jaarverslagen/results.csv' "
+        "INTO TABLE tempOrganisatorischeKenmerken "
+        "FIELDS TERMINATED BY ';' "
+        "LINES TERMINATED BY '\n' "
+        "IGNORE 1 ROWS;"
+    )
+    try:
+        cursor = connection.cursor()
+        cursor.execute(qryUpdateWhere)
+        cursor.close()
+        connection.commit()
+    except:
+        print('Niet gelukt')
+
+    
+
 def addWebContent():
     qryKolomToevoegen = (
         "ALTER TABLE Bedrijf "
@@ -105,9 +134,11 @@ mysql_connect()
 
 # Gescrapete data doorvoeren naar de databank. 
 # addWebContent()
+# addOrganisatorischeKenmerken()
 
 # dropConstraint()
 # resetBedrijf()
 
-qry = run_query('select * from Bedrijf')
+qry = run_query('select * from Bedrijf b inner join tempOrganisatorischeKenmerken t on b.BedrijfID = t.BedrijfID;')
+
 print(qry)

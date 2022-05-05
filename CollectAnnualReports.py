@@ -353,10 +353,11 @@ def scrape_jaarverslag(ondnr):
                 arr = Text.split('\n')
                 index = arr.index('TOTAAL VAN DE ACTIVA')
                 balanstotaal = arr[index + 2].replace('.','')
+
                 if balanstotaal.isdecimal():
                   data[2] = balanstotaal
                 else:
-                  data[2] = 0
+                  data[2] = None
             except:
               print('Error: Balanstotaal')
 
@@ -383,7 +384,7 @@ def scrape_jaarverslag(ondnr):
               data[4] = 'B2B'
             else:
               if i == (NumPages-2):
-                data[3] = 'Niet vermeld'
+                data[4] = 'Niet vermeld'
     except:
       print('niet gelukt om pagina te lezen')
 
@@ -399,17 +400,22 @@ def scrape_jaarverslag(ondnr):
 
 companyNumbers = findCompanyNr() # bedrijfsnummers ophalen
 
+teller = 0
+
 for nr in companyNumbers:
-  scrapeteInfo = download_pdf(nr.replace(" ", ""))
-  time.sleep(3) # Om zeker te zijn dat de file gedownload is alvorens we ze gaan verplaatsen, anders verplaatsen we een verkeerde.
-  data = scrape_jaarverslag(nr) # Data van de scraper opslaan
-  
-  saveAsFile(nr, data[0], scrapeteInfo) # Naar bestand schrijven.
+  if teller > 10000:
+    scrapeteInfo = download_pdf(nr.replace(" ", ""))
+    time.sleep(3) # Om zeker te zijn dat de file gedownload is alvorens we ze gaan verplaatsen, anders verplaatsen we een verkeerde.
+    data = scrape_jaarverslag(nr) # Data van de scraper opslaan
+    
+    saveAsFile(nr, data[0], scrapeteInfo) # Naar bestand schrijven.
 
-  saveOccurrencesKeywords(nr, data[1])
+    saveOccurrencesKeywords(nr, data[1])
 
-  print(f'{nr} bekeken')
-  time.sleep(3)
+    print(f'{nr} bekeken')
+    time.sleep(3)
+    
+    #move_file()
+    #delete_file() # Uncomment dit om ruimte te besparen op je HDD, maar zorg dat je eerst scrapet.
   
-  #move_file()
-  delete_file() # Uncomment dit om ruimte te besparen op je HDD, maar zorg dat je eerst scrapet.
+  teller += 1
