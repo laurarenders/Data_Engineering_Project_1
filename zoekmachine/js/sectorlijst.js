@@ -1,11 +1,11 @@
 // import { connect } from "./connection.js";
 const connect = import("./connection.js");
 
-function weergaveBedrijven(sector) {
+function weergaveSectoren(sector) {
 
   const connection = connect;
 
-  let bedrijven = ["Toerisme", "ICT", "Transport"]; // Bij connectie met db dit in commentaar, querry er onder uit commentaar
+  let sectoren = ["Toerisme", "ICT", "Transport"]; // Bij connectie met db dit in commentaar, querry er onder uit commentaar
   // let bedrijven = bedrijven(bedrijfsnaam) // Met spreadoperator nog omzetten naar array
   // Controleren of bedrijf is gevonden, anders gepaste boodschap
 
@@ -16,8 +16,8 @@ function weergaveBedrijven(sector) {
   h1.append(text);
   title.append(h1);
 
-  bedrijven.forEach((elem, ind, val) => {
-    let table = document.getElementById("bedrijven");
+  sectoren.forEach((elem, ind, val) => {
+    let table = document.getElementById("sectoren");
 
     let nieuweRij = document.createElement("tr");
     if (ind % 2 == 0) {
@@ -29,7 +29,7 @@ function weergaveBedrijven(sector) {
 
     let aGedetaileerd = document.createElement("a");
     aGedetaileerd.setAttribute("id", elem);
-    aGedetaileerd.href = `./gedetailleerd.html`;
+    aGedetaileerd.href = `./sectorGedetailleerd.html`;
     aGedetaileerd.style.fontWeight = "900";
     if (ind % 2 == 0) {
       aGedetaileerd.setAttribute("class", "linkToDetailedInfoEven");
@@ -38,22 +38,12 @@ function weergaveBedrijven(sector) {
 
     }
 
-    let tdGemeente = document.createElement("td");
-    let gemeente = document.createTextNode(elem); // Wordt de querry om de gemeente uit het bedrijf te halen
-    tdGemeente.append(gemeente);
+    let tdSector = document.createElement("td");
+    let sector = document.createTextNode(elem);
+    tdSector.append(sector);
+    aGedetaileerd.append(tdSector);
 
-    let tdBedrijf = document.createElement("td");
-    let bedrijf = document.createTextNode("");
-    tdBedrijf.append(bedrijf);
-    aGedetaileerd.append(tdBedrijf)
-
-    let tdOndernemingsnummer = document.createElement("td");
-    let ondernemingsnummer = document.createTextNode(""); // Wordt de querry om de gemeente uit het bedrijf te halen
-    tdOndernemingsnummer.append(ondernemingsnummer);
-
-    nieuweRij.append(tdGemeente);
     nieuweRij.append(aGedetaileerd);
-    nieuweRij.append(tdOndernemingsnummer);
 
     table.append(nieuweRij);
 
@@ -64,6 +54,6 @@ function weergaveBedrijven(sector) {
 
 };
 
-let bedrijfsnaam = localStorage.getItem("sector");
+let sectorNaam = localStorage.getItem("sector");
 
-weergaveBedrijven(bedrijfsnaam)
+weergaveSectoren(sectorNaam)
