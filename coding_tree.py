@@ -5,7 +5,7 @@ implementatie_werknemersrechten = ["duurzaamheidscommissie", "rechten van werkne
 sociale_relaties = ["sociale relaties", "werkvloer",
                     "solidair gedrag",  "betrokkenheid van werknemers"]
 werkgelegenheid = ["rekrutering", "rekruteringsbeleid", "rekruteringsverloop", "rekruteringstijd", "arbeidsovereenkomst", "werknemer", "werknemers", "diversiteitsbeleid", "loopbaan", "carrière",
-                   "carrièreontwikkeling", "groei opportuniteiten", "groeikansen", "doorstroommogelijkheden", "promotie", "demografisch", "personeelsbestand", "promotie", "human resources", "HR", "personeelsbeleid"]
+                   "carrièreontwikkeling", "groei opportuniteiten", "groeikansen", "doorstroommogelijkheden", "promotie", "demografisch", "personeelsbestand", "human resources", "HR", "personeelsbeleid"]
 organisatie_op_het_werk = ["vergoeding", "beloning", "bonus", "stabiliteit van werknemers", "stabiliteit", "bedrijfscultuur", "loyaliteit van werknemers", "personeelsbehoud", "retentie personeel", "loyaliteitsbonus",
                            "personeelsverloop", "leeftijdsstructuur", "afwezigheid", "afwezigheidsratio", "tevredenheid op het werk", "opvolgingsbeheer", "prestatiebeleid", "prestatie", "ziekte", "verzuim", "aanwezigheid", "aanwezigheidsratio"]
 gezondheid_en_veiligheid = ["preventie", "pesterij", "ongewenst gedrag", "klacht", "gezondheid van werknemers", "welzijn van werknemers", "managers", "arbeiders",
@@ -16,10 +16,10 @@ SDG = ["kinderarbeid", "goede gezondheid en welzijn", "gender-gelijkheid", "waar
        "ongelijkheid verminderen", "vrede", "veiligheid en sterke publieke diensten"]
 
 gebruik_van_energiebronnen = ["energiebron", "energie vermindering",
-                              "energie reductie", "energie-intensiteit", "energiegebruik", "energieverbruik"]
+                              "energie reductie", "energie-intensiteit", "energiegebruik"]
 gebruik_van_waterbronnen = ["waterverbruik", "waterbron", "wateronttrekking",
                             "waterafvoer", "watergebruik", "afvalwater", "grondwater"]
-emissies_van_broeikasgassen = ["broeikasgas", "CO2", "CO²", "CO2"]
+emissies_van_broeikasgassen = ["broeikasgas", "CO2", "CO²"]
 vervuilende_uitstoot = ["emissie", "uitstoot", "vervuiling", "zure regen", "uitstoot", "fijnstof",
                         "fijn stof", "vervuilende stof", "filtertechniek", "luchtzuiverheid", "zuiveringstechnologie"]
 milieu_impact = ["impact", "milieu-impact", "impact op het milieu", "milieu impact", "milieu", "mobiliteit", "vervoer", "verplaatsing", "fiets",
