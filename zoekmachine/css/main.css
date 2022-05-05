@@ -56,6 +56,11 @@ button {
   font-family: inherit;
 }
 
+#sectoren {
+  margin: auto;
+  font-family: inherit;
+}
+
 table {
   border-spacing: 0;
 }
