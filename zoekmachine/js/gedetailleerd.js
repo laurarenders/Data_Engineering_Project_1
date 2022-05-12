@@ -1,11 +1,14 @@
-"use strict";
+function weergaveBedrijf(gekozenBedrijf) {
 
-let gekozenBedrijf = localStorage.getItem("bedrijfsnaam")
+    let title = document.getElementById("title");
+    let h1 = document.createElement("h1");
+    let text = document.createTextNode(`Gedetailleerd overzicht van "${gekozenBedrijf}"`);
+  
+    h1.append(text);
+    title.append(h1);
 
-let container = document.getElementById("container")
+};
 
-let h1 = document.createElement("h1");
-let title = document.createTextNode(`Gedetailleerd overzicht van ${gekozenBedrijf}`);
-h1.append(title);
+let gekozenBedrijf = localStorage.getItem("zoekterm");
 
-container.append(h1);
+weergaveBedrijf(gekozenBedrijf)
