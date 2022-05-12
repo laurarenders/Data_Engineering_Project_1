@@ -106,3 +106,9 @@ button:hover {
   border: none;
   border-radius: 10%;
 }
+
+#bedrijfDetails {
+  text-align: right;
+  margin-left: 25%
+}
+
