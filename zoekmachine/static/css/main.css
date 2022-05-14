@@ -1,0 +1,129 @@
+* {
+  font-family: inherit;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background-color: rgb(229, 223, 205);
+  text-align: center;
+}
+
+h1 {
+  margin: auto;
+  margin-top: 5%;
+  margin-bottom: 50px;
+  font-size: 40px;
+}
+
+button {
+  font-size: 15px;
+  margin-top: 10px;
+  width: auto;
+  height: 25px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid black;
+  padding: 0 10px;
+}
+
+#companyname {
+  width: 50%;
+  border: 0;
+  border-bottom: 2px solid gray;
+  outline: 0;
+  font-size: 1.3rem;
+  color: black;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+#sector {
+  width: 50%;
+  border: 0;
+  border-bottom: 2px solid gray;
+  outline: 0;
+  font-size: 1.3rem;
+  color: black;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+#bedrijven {
+  margin: auto;
+  font-family: inherit;
+}
+
+#sectoren {
+  margin: auto;
+  font-family: inherit;
+}
+
+#containerBedrijfslijst table {
+  overflow-y:scroll;
+  height:300px;
+  display: inline-block;
+  padding-left: auto;
+  padding-right: auto
+}
+
+th {
+  padding-bottom: 5px;
+  position: sticky;
+  top: 0;
+  background-color: #0f3923;
+  color: white;
+}
+
+td {
+  padding: 10px 50px 10px 50px;
+}
+
+#bedrijfDetails {
+  height: 500px;
+}
+
+.btnGedetailleerd {
+  width: auto;
+  text-align: center;
+  margin: 0 30px;
+}
+
+.linkToDetailedInfoEven {
+  color: white;
+}
+
+.linkToDetailedInfoEven:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.linkToDetailedInfoOdd {
+  color: black;
+}
+
+.linkToDetailedInfoOdd:hover {
+  color: black;
+  text-decoration: underline;
+}
+
+a {
+  text-decoration: none;
+}
+
+button:hover {
+  background-color: gray;
+  border: none;
+  border-radius: 10%;
+}
+
+::-webkit-scrollbar {
+  width: 50px;
+}
+
+#bedrijfDetails {
+  text-align: right;
+  margin-left: 25%
+}
