@@ -70,6 +70,12 @@ function weergaveBedrijf(bedrijfsnaam) {
   btwonum.forEach(elem => {
     btwo += String.fromCharCode(elem)
   })
+  let duurzaamperc = bedrijfsinfoarr[11]
+  let duurzaamScorenum = bedrijfsinfoarr[12]
+  let duurzaamScore = "";
+  duurzaamScorenum.forEach(elem => {
+    duurzaamScore += String.fromCharCode(elem)
+  })
 
   let volledigeAdres = adres + " " + postcode + " " + adresGemeente;
 
@@ -82,8 +88,8 @@ function weergaveBedrijf(bedrijfsnaam) {
   document.getElementById("balanstab").innerText = "€ "+balans;
   document.getElementById("frametab").innerText = framework;
   document.getElementById("btwotab").innerText = btwo;
-  document.getElementById("duurzaamperctab").innerText = "Nog toe te voegen in db";
-  document.getElementById("duurzaamscoretab").innerText = "Nog toe te voegen in db";
+  document.getElementById("duurzaamperctab").innerText = duurzaamperc;
+  document.getElementById("duurzaamscoretab").innerText = duurzaamScore;
 }
 
 let gekozenBedrijf = localStorage.getItem("bedrijfsnaam");

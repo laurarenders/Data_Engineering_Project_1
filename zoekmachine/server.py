@@ -74,13 +74,13 @@ def companies():
   mysql_connect()
 
   bedrijf = request.args.get("bedrijven")
-  query = f'SELECT b.Naam, b.Ondernemingsnummer, l.gemeente FROM Bedrijf b JOIN Locatie l ON b.Locatie = l.LocatieID WHERE b.Naam LIKE "{bedrijf}%" ORDER BY b.Naam, b.Ondernemingsnummer;'
+  query = f'SELECT b.Naam, b.BedrijfID, l.gemeente FROM Bedrijf b JOIN Locatie l ON b.Locatie = l.LocatieID WHERE b.Naam LIKE "{bedrijf}%" ORDER BY b.Naam, b.BedrijfID;'
   result = run_query(query)
   bedrijfsnamen = []
   gemeentes = []
   ondernemingsnummers = []
 
-  # print(result)
+  print(result)
   
   for r in result:
     bn = list(r)
@@ -102,10 +102,11 @@ def companyinfo():
   mysql_connect()
 
   bedrijf = request.args.get("bedrijf")
-  query = f'''SELECT b.Naam, s.Sector, b.Ondernemingsnummer, l.postcode, l.gemeente, b.Adres, b.AantalWerknemers, b.Omzet, b.Balanstotaal, b.Framework, b.SoortBusiness
+  query = f'''SELECT b.Naam, s.Sector, b.BedrijfID, l.postcode, l.gemeente, b.Adres, b.AantalWerknemers, b.Omzet, b.Balanstotaal, b.Framework, b.SoortBusiness, a.Percentage, a.Score
             FROM Bedrijf b 
             JOIN Sector s ON b.sectorID = s.SectorID 
             JOIN Locatie l ON b.Locatie = l.LocatieID
+            JOIN ABCD a ON b.BedrijfID = a.BedrijfID
             WHERE b.Naam = "{bedrijf}"
             ORDER BY b.Naam ASC;'''
   result = run_query(query)
@@ -156,7 +157,7 @@ def sectorinfo():
   mysql_connect()
 
   sector = request.args.get("sector")
-  query = f'''SELECT b.Naam, b.Ondernemingsnummer, l.gemeente 
+  query = f'''SELECT b.Naam, b.BedrijfID, l.gemeente 
               FROM Bedrijf b 
               JOIN Locatie l ON b.Locatie = l.LocatieID
               WHERE (SELECT SectorID FROM Sector s WHERE Sector = "{sector}") = b.sectorID
