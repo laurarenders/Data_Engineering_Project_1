@@ -44,7 +44,11 @@ function weergaveSectoren(sector) {
 
   let title = document.getElementById("title");
   let h1 = document.createElement("h1");
-  let text = document.createTextNode(`Sectoren die "${sector}" bevatten`);
+  let text;
+  if(sector === "/all")
+    text = document.createTextNode(`Overzicht van alle sectoren`);
+  else
+    text = document.createTextNode(`Sectoren die "${sector}" bevatten`);
 
   h1.append(text);
   title.append(h1);
@@ -62,7 +66,7 @@ function weergaveSectoren(sector) {
 
     let aGedetaileerd = document.createElement("a");
     aGedetaileerd.setAttribute("id", elem);
-    aGedetaileerd.href = `/sectorGedetailleerd.html?sector=${elem}`;
+    aGedetaileerd.href = `/sectorOverzicht.html?sector=${elem}`;
     aGedetaileerd.style.fontWeight = "900";
     if (ind % 2 == 0) {
       aGedetaileerd.setAttribute("class", "linkToDetailedInfoEven");

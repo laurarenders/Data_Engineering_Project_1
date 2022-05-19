@@ -74,20 +74,24 @@ def companies():
   mysql_connect()
 
   bedrijf = request.args.get("bedrijven")
-  # query = f"SELECT b.Naam, l.gemeente, b.Ondernemingsnummer FROM Bedrijf b JOIN Locatie l ON b.BedrijfID = l.BedrijfID WHERE b.Naam LIKE '%{bedrijf}%';"
-  query = f"SELECT b.Naam, b.Ondernemingsnummer FROM Bedrijf b WHERE b.Naam LIKE '%{bedrijf}%';"
+  query = f'SELECT b.Naam, b.Ondernemingsnummer, l.gemeente FROM Bedrijf b JOIN Locatie l ON b.Locatie = l.LocatieID WHERE b.Naam LIKE "{bedrijf}%" ORDER BY b.Naam, b.Ondernemingsnummer;'
   result = run_query(query)
-  bedrijfsnaam = ""
   bedrijfsnamen = []
+  gemeentes = []
   ondernemingsnummers = []
 
+  # print(result)
+  
   for r in result:
-    bn = list(r[0])
-
-    bedrijfsnamen.append([ord(b) for b in bn])
+    bn = list(r)
+    print(f"bn: {bn}")
+    bedrijfsnamen.append([ord(b) for b in bn[0]])
     ondernemingsnummers.append(r[1])
+    gem = list(r[2])
+    gemeentes.append([ord(g) for g in gem])
 
-  ls = [bedrijfsnamen,ondernemingsnummers]
+
+  ls = [bedrijfsnamen, gemeentes, ondernemingsnummers]
 
   return render_template("bedrijfslijst.html", response = ls)
 
@@ -98,28 +102,26 @@ def companyinfo():
   mysql_connect()
 
   bedrijf = request.args.get("bedrijf")
-  print(bedrijf)
-  query = f"""SELECT b.Naam, s.Sector, b.Ondernemingsnummer, b.Adres, l.gemeente, tok.AantalWerknemers, tok.Omzet, tok.Balanstotaal, tok.Framework, tok.SoortBusiness, mb.score
+  query = f'''SELECT b.Naam, s.Sector, b.Ondernemingsnummer, l.postcode, l.gemeente, b.Adres, b.AantalWerknemers, b.Omzet, b.Balanstotaal, b.Framework, b.SoortBusiness
             FROM Bedrijf b 
             JOIN Sector s ON b.sectorID = s.SectorID 
-            JOIN Locatie l ON b.BedrijfID = l.LocatieID
-            JOIN tempOrganisatorischeKenmerken tok ON b.BedrijfID = tok.BedrijfID
-            JOIN milieuBeleid mb ON b.BedrijfID = mb.BedrijfID
-            WHERE b.Naam = '{bedrijf}';"""
+            JOIN Locatie l ON b.Locatie = l.LocatieID
+            WHERE b.Naam = "{bedrijf}"
+            ORDER BY b.Naam ASC;'''
   result = run_query(query)
-  bedrijfsnaam = ""
-  bedrijfsnamen = []
-  ondernemingsnummers = []
 
-  for r in result:
-    bn = list(r[0])
+  bedrijfsinfo = []
 
-    bedrijfsnamen.append([ord(b) for b in bn])
-    ondernemingsnummers.append(r[1])
+  for r in result[0]:
+    print(r)
+    if type(r) != int:
+      bedrijfsinfo.append([ord(i) for i in r])
+    else:
+      bedrijfsinfo.append([r])
 
-  ls = [bedrijfsnamen,ondernemingsnummers]  # Nog in lijst zetten en doorgeven aan js
+  print(bedrijfsinfo)
 
-  return render_template("gedetailleerd.html")
+  return render_template("gedetailleerd.html", response=bedrijfsinfo)
 
 @app.route("/perSector.html")
 def perSector():
@@ -132,8 +134,11 @@ def sectors():
   mysql_connect()
 
   sector = request.args.get("sectoren")
-  # query = f"SELECT b.Naam, l.gemeente, b.Ondernemingsnummer FROM Bedrijf b JOIN Locatie l ON b.BedrijfID = l.BedrijfID WHERE b.Naam LIKE '%{bedrijf}%';"
-  query = f"SELECT s.Sector FROM Sector s WHERE s.Sector LIKE '%{sector}%';"
+  if sector != "/all":
+    query = f'SELECT s.Sector FROM Sector s WHERE s.Sector LIKE "{sector}%" ORDER BY s.Sector ASC;'
+  else:
+    query = f'SELECT s.Sector FROM Sector s ORDER BY s.Sector ASC;'
+
   result = run_query(query)
 
   sectoren = []
@@ -142,34 +147,37 @@ def sectors():
     se = r[0]
     sectoren.append([ord(s) for s in se])
 
-  print(sectoren)
-
-
   return render_template("sectorlijst.html", response=sectoren)
 
-@app.route("/sectorGedetailleerd.html")
+@app.route("/sectorOverzicht.html")
 def sectorinfo():
 
-  # open_ssh_tunnel()
-  # mysql_connect()
+  open_ssh_tunnel()
+  mysql_connect()
 
-  # bedrijf = request.args.get("sector")
-  # print(bedrijf)
-  # query = f"""Nog te maken"""
-  # result = run_query(query)
-  # bedrijfsnaam = ""
-  # bedrijfsnamen = []
-  # ondernemingsnummers = []
+  sector = request.args.get("sector")
+  query = f'''SELECT b.Naam, b.Ondernemingsnummer, l.gemeente 
+              FROM Bedrijf b 
+              JOIN Locatie l ON b.Locatie = l.LocatieID
+              WHERE (SELECT SectorID FROM Sector s WHERE Sector = "{sector}") = b.sectorID
+              ORDER BY b.Naam ASC;'''
+  result = run_query(query)
+  bedrijfsnamen = []
+  gemeentes = []
+  ondernemingsnummers = []
 
-  # for r in result:
-  #   bn = list(r[0])
+  for r in result:
+    bn = list(r[0])
 
-  #   bedrijfsnamen.append([ord(b) for b in bn])
-  #   ondernemingsnummers.append(r[1])
+    bedrijfsnamen.append([ord(b) for b in bn])
+    ondernemingsnummers.append(r[1])
+    gem = list(r[2])
+    gemeentes.append([ord(g) for g in gem])
 
-  # ls = [bedrijfsnamen,ondernemingsnummers]  # Nog in lijst zetten en doorgeven aan js
 
-  return render_template("sectorGedetailleerd.html")
+  ls = [bedrijfsnamen, gemeentes, ondernemingsnummers]
+
+  return render_template("sectorOverzicht.html", response = ls)
 
 if __name__ == '__main__':
     app.run(debug=True)

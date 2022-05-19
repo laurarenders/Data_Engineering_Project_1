@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sector</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+</head>
+<body>
+    <div id="title"></div>
+    <div id="containerBedrijfslijst">
+      <table id="bedrijven">
+        <thead>
+          <tr>
+            <th>Gemeente</th>
+            <th>Bedrijf</th>
+            <th>Ondernemingsnummer</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody> 
+      </table>
+    </div>
+
+    <a href="./sectorlijst.html">
+        <button type="button" class="btnGedetailleerd">Terug</button>
+    </a>
+    <a href="./perSector.html">
+        <button type="button" class="btnGedetailleerd">Home</button>
+    </a>
+
+    <script>localStorage.setItem("BedrijvenVolgensSector", "{{response}}")</script>
+
+</body>
+<script src="{{url_for('static', filename='js/sectorOverzicht.js')}}" type="text/javascript"></script>
+</html>

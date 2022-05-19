@@ -28,6 +28,12 @@ button {
   padding: 0 10px;
 }
 
+.activeTabButt {
+  background-color: #0f3923;
+  color: white;
+  border-radius: 1rem;
+}
+
 #companyname {
   width: 50%;
   border: 0;
@@ -81,6 +87,10 @@ td {
   padding: 10px 50px 10px 50px;
 }
 
+.rightalign {
+  text-align: left;
+}
+
 #bedrijfDetails {
   height: 500px;
 }
@@ -116,7 +126,7 @@ a {
 button:hover {
   background-color: gray;
   border: none;
-  border-radius: 10%;
+  border-radius: 1rem;
 }
 
 ::-webkit-scrollbar {

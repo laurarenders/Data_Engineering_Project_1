@@ -29,13 +29,18 @@ function weergaveBedrijven(bedrijfsnaam) {
   })
 
   console.log(bedrijvenlist)
-  let bedrijfsnamennumbers = bedrijven.slice(0, bedrijven.length - 3)
+  let bedrijfsnamenPlusGemeentesnumbers = bedrijven.slice(0, bedrijven.length-3)
+  let bedrijfsnamennumbers = bedrijven.slice(0, bedrijfsnamenPlusGemeentesnumbers.length / 2)
+  let gemeentennumbers = bedrijven.slice(bedrijfsnamennumbers.length + 1, bedrijfsnamenPlusGemeentesnumbers.length)
   let ondernemingsnummers = bedrijven[bedrijven.length - 2]
 
+  console.log(bedrijfsnamenPlusGemeentesnumbers)
   console.log(bedrijfsnamennumbers)
+  console.log(gemeentennumbers)
   console.log(ondernemingsnummers)
 
   let bedrijfsnamenlist = []
+  let gemeentenlist = []
   let naam = "";
 
   bedrijfsnamennumbers.forEach(elem => {
@@ -46,6 +51,14 @@ function weergaveBedrijven(bedrijfsnaam) {
     naam = ""
   });
 
+  gemeentennumbers.forEach(elem => {
+    elem.forEach(e => {
+      naam += String.fromCharCode(e)
+    })
+    gemeentenlist.push(naam)
+    naam = ""
+  });
+
   let title = document.getElementById("title");
   let h1 = document.createElement("h1");
   let text = document.createTextNode(`Bedrijven die de zoekterm "${bedrijfsnaam}" bevatten`);
@@ -53,7 +66,7 @@ function weergaveBedrijven(bedrijfsnaam) {
   h1.append(text);
   title.append(h1);
 
-  bedrijfsnamenlist.forEach((elem, ind, val) => {
+  bedrijfsnamenlist.forEach((elem, ind, arr) => {
     let table = document.getElementById("bedrijven");
 
     let nieuweRij = document.createElement("tr");
@@ -78,7 +91,7 @@ function weergaveBedrijven(bedrijfsnaam) {
     }
 
     let tdGemeente = document.createElement("td");
-    let gemeente = document.createTextNode("Gemeente van " + elem); // Wordt de querry om de gemeente uit het bedrijf te halen
+    let gemeente = document.createTextNode(gemeentenlist[ind]); // Wordt de querry om de gemeente uit het bedrijf te halen
     tdGemeente.append(gemeente);
 
     let tdBedrijf = document.createElement("td");

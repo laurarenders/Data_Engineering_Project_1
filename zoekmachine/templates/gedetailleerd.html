@@ -13,56 +13,58 @@
         <table id="bedrijfDetails">
             <tr>
                 <td>Naam</td>
-                <td>test</td>
+                <td id="naamtab" class="rightalign"></td>
               </tr>
             <tr>
                 <td>Sector</td>
-                <td>test</td>
+                <td id="sectortab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>Ondernemingsnummer</td>
-                <td>test</td>
+                <td id="ondertab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>Adres</td>
-                <td>test</td>
+                <td id="adrestab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>Aantal werknemers</td>
-                <td>test</td>
+                <td id="aantalwerktab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>Omzet</td>
-                <td>test</td>
+                <td id="omzettab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>Balanstotaal</td>
-                <td>test</td>
+                <td id="balanstab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>Framework</td>
-                <td>test</td>
+                <td id="frametab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>B2B/B2C</td>
-                <td>test</td>
+                <td id="btwotab" class="rightalign"></td>
             </tr>
             <tr>
                 <td>Duurzaamheidsrapportering - percentage </td>
-                <td>test</td>
+                <td id="duurzaamperctab"></td>
             </tr>
             <tr>
                 <td>Duurzaamheidsrapportering - score</td>
-                <td>test</td>
+                <td id="duurzaamscoretab"></td>
             </tr>
         </table>
       </div>
-      <a href="./bedrijfslijst.html">
+      <a type="button" id="back">
           <button type="button" class="btnGedetailleerd">Terug</button>
       </a>
-      <a href="./index.html">
+      <a href="/">
           <button type="button" class="btnGedetailleerd">Home</button>
       </a>
+      
+    <script>localStorage.setItem("Bedrijfsinfo", "{{response}}")</script>
+    <script src="{{url_for('static', filename='js/gedetailleerd.js')}}" type="text/javascript"></script>
 </body>
-<script src="{{url_for('static', filename='js/gedetailleerd.js')}}" type="text/javascript"></script>
 </html>
