@@ -78,8 +78,8 @@ function weergaveBedrijf(bedrijfsnaam) {
   document.getElementById("ondertab").innerText = ondernemingsnummer;
   document.getElementById("adrestab").innerText = volledigeAdres;
   document.getElementById("aantalwerktab").innerText = werknemers;
-  document.getElementById("omzettab").innerText = omzet;
-  document.getElementById("balanstab").innerText = balans;
+  document.getElementById("omzettab").innerText = "€ "+omzet;
+  document.getElementById("balanstab").innerText = "€ "+balans;
   document.getElementById("frametab").innerText = framework;
   document.getElementById("btwotab").innerText = btwo;
   document.getElementById("duurzaamperctab").innerText = "Nog toe te voegen in db";
