@@ -6,20 +6,21 @@ function weergaveBedrijven(bedrijfsnaam) {
   let sublist = [];
   let value = "";
 
+  // unicode weer omzetten naar leesbare tekens
   [...bedrijvenlist].forEach((elem, ind, arr) => {
-    if(elem !== "[" && elem !== "]" && elem !== ","){
+    if (elem !== "[" && elem !== "]" && elem !== ",") {
       value += elem;
     }
 
-    if(elem === "," && arr[ind+2] !== "[") {
-      if(value !== "") {
+    if (elem === "," && arr[ind + 2] !== "[") {
+      if (value !== "") {
         sublist.push(value.trim());
         value = "";
       }
     }
 
-    if(elem === "]") {
-      if(sublist !== []) {
+    if (elem === "]") {
+      if (sublist !== []) {
         sublist.push(value.trim())
         bedrijven.push(sublist)
         value = ""
@@ -29,7 +30,7 @@ function weergaveBedrijven(bedrijfsnaam) {
   })
 
   console.log(bedrijvenlist)
-  let bedrijfsnamenPlusGemeentesnumbers = bedrijven.slice(0, bedrijven.length-3)
+  let bedrijfsnamenPlusGemeentesnumbers = bedrijven.slice(0, bedrijven.length - 3)
   let bedrijfsnamennumbers = bedrijven.slice(0, bedrijfsnamenPlusGemeentesnumbers.length / 2)
   let gemeentennumbers = bedrijven.slice(bedrijfsnamennumbers.length + 1, bedrijfsnamenPlusGemeentesnumbers.length)
   let ondernemingsnummers = bedrijven[bedrijven.length - 2]
@@ -70,11 +71,10 @@ function weergaveBedrijven(bedrijfsnaam) {
     let table = document.getElementById("bedrijven");
 
     let nieuweRij = document.createElement("tr");
-    if(ind % 2 == 0) {
+    if (ind % 2 == 0) {
       nieuweRij.style.backgroundColor = "#837569";
       nieuweRij.style.color = "white";
-    }
-    else {
+    } else {
       nieuweRij.style.backgroundColor = "#f2f2f2";
     }
 
@@ -82,10 +82,9 @@ function weergaveBedrijven(bedrijfsnaam) {
     aGedetaileerd.setAttribute("id", elem);
     aGedetaileerd.href = `/gedetailleerd.html?bedrijf=${elem}`;
     aGedetaileerd.style.fontWeight = "900";
-    if(ind % 2 == 0) {
+    if (ind % 2 == 0) {
       aGedetaileerd.setAttribute("class", "linkToDetailedInfoEven");
-    }
-    else {
+    } else {
       aGedetaileerd.setAttribute("class", "linkToDetailedInfoOdd");
 
     }
@@ -115,24 +114,24 @@ function weergaveBedrijven(bedrijfsnaam) {
   });
 
   // ------------------------------------------------ Niet gevonden ------------------------------------------------
-  if(bedrijfsnamenlist.length === 0) {
-    document.getElementById("bedrijven").innerHTML=""
-    document.getElementById("title").innerText=""
+  if (bedrijfsnamenlist.length === 0) {
+    document.getElementById("bedrijven").innerHTML = ""
+    document.getElementById("title").innerText = ""
 
     container = document.getElementById("containerBedrijfslijst")
-  
+
     let h1 = document.createElement("h1");
     let text = document.createTextNode(`Niets gevonden...`);
-  
+
     h1.append(text);
     container.append(h1);
   }
-// ------------------------------------------------ Niet gevonden ------------------------------------------------
+  // ------------------------------------------------ Niet gevonden ------------------------------------------------
 
 };
 
 let bedrijfsnaam = localStorage.getItem("zoekterm");
 
-if(!window.location.search)
+if (!window.location.search)
   window.location.href = `/bedrijfslijst.html?bedrijven=${bedrijfsnaam}`;
 weergaveBedrijven(bedrijfsnaam)

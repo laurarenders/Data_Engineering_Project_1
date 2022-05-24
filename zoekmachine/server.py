@@ -81,7 +81,7 @@ def companies():
   ondernemingsnummers = []
 
   print(result)
-  
+  # omzetting naar unicode
   for r in result:
     bn = list(r)
     print(f"bn: {bn}")
