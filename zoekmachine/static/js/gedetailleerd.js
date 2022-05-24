@@ -2,6 +2,7 @@ function weergaveBedrijf(bedrijfsnaam) {
 
   let bedrijfsinfo = localStorage.getItem("Bedrijfsinfo")
 
+  // HTML in js schrijven
   let title = document.getElementById("title");
   let h1 = document.createElement("h1");
   let text = document.createTextNode(`Gedetailleerd overzicht van "${bedrijfsnaam}"`);
@@ -13,6 +14,7 @@ function weergaveBedrijf(bedrijfsnaam) {
   let sublist = [];
   let value = "";
 
+  // Data uit local storage omzetten naar grote lijst
   [...bedrijfsinfo].forEach((elem, ind, arr) => {
     if(elem !== "[" && elem !== "]" && elem !== ","){
       value += elem;
@@ -35,6 +37,7 @@ function weergaveBedrijf(bedrijfsnaam) {
     }
   })
 
+  // Data uit grote lijst halen en evt omzetten naar chars
   let naamnum = bedrijfsinfoarr[0]
   let naam = "";
   naamnum.forEach(elem => {
@@ -79,6 +82,7 @@ function weergaveBedrijf(bedrijfsnaam) {
 
   let volledigeAdres = adres + " " + postcode + " " + adresGemeente;
 
+  // Data weergeven in tabel
   document.getElementById("naamtab").innerText = naam;
   document.getElementById("sectortab").innerText = sector;
   document.getElementById("ondertab").innerText = ondernemingsnummer;
@@ -98,6 +102,7 @@ weergaveBedrijf(gekozenBedrijf)
 
 const terug = document.getElementById("back");
 
+// Bepalen naar welke pagina te gaan na drukken terugknop
 terug.onclick = () => {
   if (localStorage.getItem("sectornaam") !== null) {
     sectornaam = localStorage.getItem("sectornaam");

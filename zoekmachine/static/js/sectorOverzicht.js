@@ -1,7 +1,7 @@
 function weergaveBedrijven(sectornaam) {
   let bedrijvenlist = localStorage.getItem("BedrijvenVolgensSector");
 
-  // let char = String.fromCharCode(65);
+  // Data uit local storage omzetten naar grote lijst
   let bedrijven = [];
   let sublist = [];
   let value = "";
@@ -29,6 +29,7 @@ function weergaveBedrijven(sectornaam) {
   })
 
   console.log(bedrijvenlist)
+  // Data uit grote lijst halen
   let bedrijfsnamenPlusGemeentesnumbers = bedrijven.slice(0, bedrijven.length-3)
   let bedrijfsnamennumbers = bedrijven.slice(0, bedrijfsnamenPlusGemeentesnumbers.length / 2)
   let gemeentennumbers = bedrijven.slice(bedrijfsnamennumbers.length + 1, bedrijfsnamenPlusGemeentesnumbers.length)
@@ -43,6 +44,7 @@ function weergaveBedrijven(sectornaam) {
   let gemeentenlist = []
   let naam = "";
 
+  // Unicode omzetten naar strings
   bedrijfsnamennumbers.forEach(elem => {
     elem.forEach(e => {
       naam += String.fromCharCode(e)
@@ -51,6 +53,7 @@ function weergaveBedrijven(sectornaam) {
     naam = ""
   });
 
+  // Unicode omzetten naar strings
   gemeentennumbers.forEach(elem => {
     elem.forEach(e => {
       naam += String.fromCharCode(e)
@@ -59,6 +62,7 @@ function weergaveBedrijven(sectornaam) {
     naam = ""
   });
 
+  // HTML schrijven in js
   let title = document.getElementById("title");
   let h1 = document.createElement("h1");
   let text = document.createTextNode(`Bedrijven die in de sector "${sectornaam}" zitten`);
@@ -66,6 +70,7 @@ function weergaveBedrijven(sectornaam) {
   h1.append(text);
   title.append(h1);
 
+  // Data weergeven in HTML
   bedrijfsnamenlist.forEach((elem, ind, arr) => {
     let table = document.getElementById("bedrijven");
 
@@ -134,5 +139,5 @@ function weergaveBedrijven(sectornaam) {
 let sectornaam = localStorage.getItem("sectornaam");
 
 if(!window.location.search)
-  window.location.href = `/bedrijfslijst.html?bedrijven=${sectornaam}`;
+  window.location.href = `/bedrijfslijst.html?bedrijven=${sectornaam}`; // Na klikken op terug-knop om pagina terug te kunnen laden
 weergaveBedrijven(sectornaam)

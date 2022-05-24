@@ -6,7 +6,7 @@ function weergaveBedrijven(bedrijfsnaam) {
   let sublist = [];
   let value = "";
 
-  // unicode weer omzetten naar leesbare tekens
+  // Data uit local storage omzetten naar grote lijst
   [...bedrijvenlist].forEach((elem, ind, arr) => {
     if (elem !== "[" && elem !== "]" && elem !== ",") {
       value += elem;
@@ -30,6 +30,7 @@ function weergaveBedrijven(bedrijfsnaam) {
   })
 
   console.log(bedrijvenlist)
+  // Data uit grote lijst halen
   let bedrijfsnamenPlusGemeentesnumbers = bedrijven.slice(0, bedrijven.length - 3)
   let bedrijfsnamennumbers = bedrijven.slice(0, bedrijfsnamenPlusGemeentesnumbers.length / 2)
   let gemeentennumbers = bedrijven.slice(bedrijfsnamennumbers.length + 1, bedrijfsnamenPlusGemeentesnumbers.length)
@@ -44,6 +45,7 @@ function weergaveBedrijven(bedrijfsnaam) {
   let gemeentenlist = []
   let naam = "";
 
+  // Unicode omzetten naar strings
   bedrijfsnamennumbers.forEach(elem => {
     elem.forEach(e => {
       naam += String.fromCharCode(e)
@@ -52,6 +54,7 @@ function weergaveBedrijven(bedrijfsnaam) {
     naam = ""
   });
 
+    // Unicode omzetten naar strings
   gemeentennumbers.forEach(elem => {
     elem.forEach(e => {
       naam += String.fromCharCode(e)
@@ -60,6 +63,7 @@ function weergaveBedrijven(bedrijfsnaam) {
     naam = ""
   });
 
+  // HTML in js schrijven
   let title = document.getElementById("title");
   let h1 = document.createElement("h1");
   let text = document.createTextNode(`Bedrijven die de zoekterm "${bedrijfsnaam}" bevatten`);
@@ -67,6 +71,7 @@ function weergaveBedrijven(bedrijfsnaam) {
   h1.append(text);
   title.append(h1);
 
+  // Tabel met resultaat schrijven
   bedrijfsnamenlist.forEach((elem, ind, arr) => {
     let table = document.getElementById("bedrijven");
 
@@ -133,5 +138,5 @@ function weergaveBedrijven(bedrijfsnaam) {
 let bedrijfsnaam = localStorage.getItem("zoekterm");
 
 if (!window.location.search)
-  window.location.href = `/bedrijfslijst.html?bedrijven=${bedrijfsnaam}`;
+  window.location.href = `/bedrijfslijst.html?bedrijven=${bedrijfsnaam}`; // Na klikken op terug-knop om pagina terug te kunnen laden
 weergaveBedrijven(bedrijfsnaam)

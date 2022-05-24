@@ -5,6 +5,7 @@ function weergaveSectoren(sector) {
   let sublist = [];
   let value = "";
 
+  // Data uit local storage omzetten naar grote lijst
   [...sectorenlijst].forEach((elem, ind, arr) => {
     if(elem !== "[" && elem !== "]" && elem !== ","){
       value += elem;
@@ -29,6 +30,7 @@ function weergaveSectoren(sector) {
 
   console.log(sectoren)
 
+  // Data uit grote lijst halen en evt omzetten naar chars
   let sectorennumbers = sectoren.slice(0, sectoren.length - 1)
 
   let sectorlijst = [];
@@ -42,10 +44,11 @@ function weergaveSectoren(sector) {
     naam = ""
   });
 
+  // HTML schrijven in js
   let title = document.getElementById("title");
   let h1 = document.createElement("h1");
   let text;
-  if(sector === "/all")
+  if(sector === "/all") // Kijken of commando is ingegeven
     text = document.createTextNode(`Overzicht van alle sectoren`);
   else
     text = document.createTextNode(`Sectoren die "${sector}" bevatten`);
@@ -53,6 +56,7 @@ function weergaveSectoren(sector) {
   h1.append(text);
   title.append(h1);
 
+  // Data weergeven in HTML
   sectorlijst.forEach((elem, ind, val) => {
     let table = document.getElementById("sectoren");
 
@@ -109,5 +113,5 @@ function weergaveSectoren(sector) {
 let sectorNaam = localStorage.getItem("sector");
 
 if(!window.location.search)
-  window.location.href = `/sectorlijst.html?sectoren=${sectorNaam}`;
+  window.location.href = `/sectorlijst.html?sectoren=${sectorNaam}`;  // Na klikken op terug-knop om pagina terug te kunnen laden
 weergaveSectoren(sectorNaam)

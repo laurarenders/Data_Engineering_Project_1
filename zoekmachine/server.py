@@ -7,6 +7,7 @@ from sshtunnel import SSHTunnelForwarder
 
 app = Flask(__name__)
 
+# Gegevens databank
 ssh_host = "vichogent.be"
 ssh_username = "root"
 ssh_password = "DEPGroep1"
@@ -22,6 +23,7 @@ def open_ssh_tunnel(verbose=False):
     :return tunnel: Global SSH tunnel connection
     """
     
+    # verbose = details weergeven
     if verbose:
         sshtunnel.DEFAULT_LOGLEVEL = logging.DEBUG
     
@@ -63,9 +65,10 @@ def run_query(sql):
     return cur.fetchall()
     # return pd.read_sql_query(sql, connection)
 
+# Wanneer je op de rootpagina zit
 @app.route("/")
 def index():
-  return render_template("index.html")
+  return render_template("index.html")  # Return template index.html
 
 @app.route("/bedrijfslijst.html")
 def companies():
@@ -73,7 +76,7 @@ def companies():
   open_ssh_tunnel()
   mysql_connect()
 
-  bedrijf = request.args.get("bedrijven")
+  bedrijf = request.args.get("bedrijven") # Argument uit url halen
   query = f'SELECT b.Naam, b.BedrijfID, l.gemeente FROM Bedrijf b JOIN Locatie l ON b.Locatie = l.LocatieID WHERE b.Naam LIKE "{bedrijf}%" ORDER BY b.Naam, b.BedrijfID;'
   result = run_query(query)
   bedrijfsnamen = []
@@ -85,15 +88,15 @@ def companies():
   for r in result:
     bn = list(r)
     print(f"bn: {bn}")
-    bedrijfsnamen.append([ord(b) for b in bn[0]])
+    bedrijfsnamen.append([ord(b) for b in bn[0]]) # Ieder character omzetten naar unicode om geen altcode te krijgen in de local storage
     ondernemingsnummers.append(r[1])
     gem = list(r[2])
-    gemeentes.append([ord(g) for g in gem])
+    gemeentes.append([ord(g) for g in gem]) # Ieder character omzetten naar unicode om geen altcode te krijgen in de local storage
 
 
   ls = [bedrijfsnamen, gemeentes, ondernemingsnummers]
 
-  return render_template("bedrijfslijst.html", response = ls)
+  return render_template("bedrijfslijst.html", response = ls)  # Return template bedrijfslijst.html, response is een parameter in de html file
 
 @app.route("/gedetailleerd.html")
 def companyinfo():
@@ -116,17 +119,17 @@ def companyinfo():
   for r in result[0]:
     print(r)
     if type(r) != int:
-      bedrijfsinfo.append([ord(i) for i in r])
+      bedrijfsinfo.append([ord(i) for i in r])  # Ieder character omzetten naar unicode om geen altcode te krijgen in de local storage
     else:
       bedrijfsinfo.append([r])
 
   print(bedrijfsinfo)
 
-  return render_template("gedetailleerd.html", response=bedrijfsinfo)
+  return render_template("gedetailleerd.html", response=bedrijfsinfo)  # Return template gedetailleerd.html, response is een parameter in de html file
 
 @app.route("/perSector.html")
 def perSector():
-  return render_template("perSector.html")
+  return render_template("perSector.html")  # Return template index.html
 
 @app.route("/sectorlijst.html")
 def sectors():
@@ -146,9 +149,9 @@ def sectors():
 
   for r in result:
     se = r[0]
-    sectoren.append([ord(s) for s in se])
+    sectoren.append([ord(s) for s in se])  # Ieder character omzetten naar unicode om geen altcode te krijgen in de local storage
 
-  return render_template("sectorlijst.html", response=sectoren)
+  return render_template("sectorlijst.html", response=sectoren)  # Return template seectorlijst.html, response is een parameter in de html file
 
 @app.route("/sectorOverzicht.html")
 def sectorinfo():
@@ -170,15 +173,15 @@ def sectorinfo():
   for r in result:
     bn = list(r[0])
 
-    bedrijfsnamen.append([ord(b) for b in bn])
+    bedrijfsnamen.append([ord(b) for b in bn])  # Ieder character omzetten naar unicode om geen altcode te krijgen in de local storage
     ondernemingsnummers.append(r[1])
     gem = list(r[2])
-    gemeentes.append([ord(g) for g in gem])
+    gemeentes.append([ord(g) for g in gem])  # Ieder character omzetten naar unicode om geen altcode te krijgen in de local storage
 
 
   ls = [bedrijfsnamen, gemeentes, ondernemingsnummers]
 
-  return render_template("sectorOverzicht.html", response = ls)
+  return render_template("sectorOverzicht.html", response = ls)  # Return template sectorOverzicht.html, response is een parameter in de html file
 
 if __name__ == '__main__':
     app.run(debug=True)
