@@ -2,7 +2,13 @@
 import os
 import time
 
-# termen en sleutelwoorden
+
+"""""
+Globale variabelen.
+"""""
+
+contents = "c:/DEPGroep1/contents/"
+
 gendergelijkheid = ["geslacht", "gendergelijkheid", "man/vrouw verhouding",
                     "ratio man/vrouw", "salaris man/vrouw", "discriminatie", "genderneutraal"]
 implementatie_werknemersrechten = ["duurzaamheidscommissie", "rechten van werknemers", "arbeisrechten",
@@ -38,9 +44,10 @@ milieu_beleid = ["milieubeleid", "hernieuwbare energie", "verspilling",
 SDGs = ["schoon water en sanitair", "betaalbare en duurzame energie", "duurzame steden en gemeenschappen",
         "verantwoorde consumptie en productie", "klimaatactie", "leven in het water", "leven op het land"]
 
-
-# Gevonden gegevens opslaan in een CSV-bestand. 
-# Meegegeven -- ondernemingsnummer en array met daarin alle info 'gold'.
+"""""
+Gevonden gegevens opslaan in een CSV-bestand. 
+Meegegeven -- ondernemingsnummer en array met daarin alle info 'gold'.
+"""""
 def saveAsFile(data):
     try: 
         # Opslaan onder /contents/
@@ -69,6 +76,11 @@ def saveAsFile(data):
     # Pauze van drie seconden.
     # time.sleep(1)
 
+
+"""""
+De input is hier alle tekst van een website (niet enkel de webpagina).
+Het aantal unieke voorkomens wordt geteld op basis van de tekst.
+"""""
 def giveScore(ondnr, text):
     textArr = text.split(' ')
     textArr = set(textArr)
@@ -144,7 +156,10 @@ def giveScore(ondnr, text):
 
     return([ondnr, data])
 
-path = "c:/DEPGroep1/contents/"
+
+
+
+path = contents
 os.chdir(path)
 
 for file in os.listdir():

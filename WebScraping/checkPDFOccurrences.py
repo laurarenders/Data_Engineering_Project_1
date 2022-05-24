@@ -1,3 +1,7 @@
+"""""
+Alle imports
+"""""
+
 import os
 from googlesearch import *
 from matplotlib.pyplot import text
@@ -15,8 +19,15 @@ import PyPDF2
 import numpy as np
 
 
-##################################
+"""""
+Globale variabelen.
+
+Het pad moet aangepast worden naar het lokale pad van de computer.
+De termen en sleutelwoorden worden bijgehouden in libraries. Deze worden nadien aangehaald bij het tellen van het aantal voorkomens.
+"""""
+
 path = 'C:/Users/Dylan/Downloads'
+scores = "C:/DEPGroep1/scores/"
 
 # termen en sleutelwoorden #######
 gendergelijkheid = ["geslacht", "gendergelijkheid", "man/vrouw verhouding",
@@ -55,12 +66,18 @@ SDGs = ["schoon water en sanitair", "betaalbare en duurzame energie", "duurzame 
         "verantwoorde consumptie en productie", "klimaatactie", "leven in het water", "leven op het land"]
 
 
+
+"""""
+Het ondernemingsnummer en het aantal voorkomens (in arrayvorm) wordt doorgestuurd naar deze methode.
+Als het ondernemingsnummer geen getal is wordt de methode afgebroken en commandline gelogd.
+"""""
+
 def saveAsFile(data, ondnr):
     try: 
         
         # Opslaan onder /contents/
-        path = "C:/DEPGroep1/scores/"
-        file = 'VoorkomensPDF4.csv'
+        path = scores
+        file = 'VoorkomensPDF.csv'
 
         path = path + file
 
@@ -81,6 +98,14 @@ def saveAsFile(data, ondnr):
     except:
         # Niet gelukt om bestand op te slaan
         print(f'Niet gelukt om de uitslag aan het bestand toe te voegen.')
+
+
+"""""
+De input van de methode is een array van woorden. Dit zijn alle woorden die op het jaarverslag terug te vinden waren.
+Voor ieder sleutelwoord wordt er in het gehele tekstbestand gekeken naar het aantal unieke voorkomens.
+Een eenmalig voorkomen van een woord telt mee als een voorkomen. De voorkomens worden opgeteld en opgeslaan in een array.
+De methode geeft een array aan voorkomens terug.
+"""""
 
 
 def countKeywordOccurrences(textArr):
@@ -160,6 +185,15 @@ def countKeywordOccurrences(textArr):
     return data
 
 
+"""""
+Applicatie.
+
+De glob dient om alle pdf's uit de huidige map op te halen. Pas het 'path'-variabele aan bij globale variabelen naar de gewenste werkmap.
+Iedere PDF wordt doorlopen. Fouten worden opgevangen.
+Onnodige speciale tekens worden uit de arrays gehaald, zo blijft enkel bruikbare lowercase woorden over.
+Alle tekst uit een jaarverslag wordt samengevoegd. De tekst in arrayvorm wordt doorgestuurd naar 'countOccurrences'.
+"""""
+
 os.chdir(path)
 for file in glob.glob("*.pdf"):
     read_pdf = PyPDF2.PdfFileReader(file)
@@ -180,13 +214,8 @@ for file in glob.glob("*.pdf"):
 
             allText[i] = Text
         except:
-            print("...")
-
-    #print(allText)
+            print(f'PDF {file} kon niet gelezen worden.')
     
     data = countKeywordOccurrences(" ".join(allText))
 
     saveAsFile(data, ondnr)
-
-
-
