@@ -25,7 +25,7 @@ import requests as req
 url = 'https://consult.cbso.nbb.be/'
 
 def findCompanyNr():
-  file = 'all.csv'
+  file = 'CSV/all.csv'
   df = pd.read_csv(file)
   ls = df['Ondernemingsnummer'].tolist()
   return ls
@@ -73,7 +73,7 @@ teller = 0
 print(len(nummers))
 
 for nr in nummers:
-  if teller > 75000 and teller < 85000:
+  if teller > 0 and teller < 5000:
     scrapeteInfo = download_pdf(nr.replace(" ", ""))
     time.sleep(1) # Om zeker te zijn dat de file gedownload is alvorens we ze gaan verplaatsen, anders verplaatsen we een verkeerde.
 

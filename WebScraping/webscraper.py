@@ -48,6 +48,7 @@ def xlsxToCSV():
 
 # Alle websites ophalen uit het CSV-bestand
 def tekstbestandUitschrijven():
+  try:
     oldpwd=os.getcwd()
 
     path = "c:/DEPGroep1/CSV/"
@@ -75,21 +76,24 @@ def tekstbestandUitschrijven():
     df = df[filter]
 
     df.to_csv('websites.csv', index=False)
+  except:
+      print('Niet gelukt om tekstbestand uit te schrijven.')
 
 
 
 
 # Alle informatie van één website (inclusief alle resterende webpages) opslaan in een tekstbestand.
+# Gold is de verzamelde data van de website.
 def saveAsFile(naam, gold):
     try: 
         # Opslaan onder /contents/
         path = contentDIR
         file = naam + '.txt'
 
-        print(file)
+        # print(file)
 
-        # sommige tekens kunnen niet in een tekstbestand gestoken worden
-        # speciale tekens eruit halen
+        # sommige tekens kunnen niet in een tekstbestand worden opgeslaan
+        # speciale tekens verwijderen
         gold = re.sub('[^a-zA-Z0-9 \n\.]', '', gold)
         
         with open(os.path.join(path,file), "a+") as file_object:
@@ -105,10 +109,10 @@ def saveAsFile(naam, gold):
             file_object.write(str(gold))
     except:
         # Niet gelukt om bestand op te slaan
-        print(f'Niet gelukt om bestand voor {naam} aan te maken.')
+        print(f'Niet gelukt om bestand voor {naam} een bestand aan te maken.')
     
     # Pauze van drie seconden.
-    time.sleep(3)
+    time.sleep(1)
 
 
 
@@ -189,16 +193,33 @@ def siteScraper(adres, og, ondnr, arr=set(), visited=set()):
 ###########################                 Applicatie             ##############################################
 #################################################################################################################
 
+
 tekstbestandUitschrijven()
 
 # Bij start tweemaal de site meegeven
 lines = open('websites.csv', 'r').readlines()
 
-for site in lines:
+txt_file = open("gescrapeteSites.txt", "r")
+gescrapeteSites = txt_file.read()
+gescrapeteAdressen = gescrapeteSites.split('\n')
+txt_file.close()
+
+
+
+for site in lines[1:]:
     ondnr = site.split(',')[0].replace(' ', '').strip()
     adres = 'https://' + site.split(',')[1].strip()
-    siteScraper(adres, adres, ondnr, set(), set())
-    time.sleep(1)
+
+    # Pas als een site volledig is gescrapet wordt deze verworpen.
+    if adres not in gescrapeteAdressen:
+        siteScraper(adres, adres, ondnr, set(), set())
+        time.sleep(1)
+        txt_file = open("gescrapeteSites.txt", "a+")
+        txt_file.seek(0)
+        txt_file.write(str(adres))
+        txt_file.write('\n')
+        txt_file.close()
+
     
 
     
