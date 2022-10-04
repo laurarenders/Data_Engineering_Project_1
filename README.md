@@ -1,7 +1,7 @@
 # Project Big Data
 
 A schoolproject made by 5 students; [Maarten Eylenbosch](https://github.com/MaartenEylenbosch), [Laura Renders](https://github.com/laurarenders), [Dylan Cluyse](https://github.com/dylancluyse), [Szymon Vertenten](https://github.com/SzymonVertenten) and [Joran Van Belle](https://github.com/JoranVanBelle)
-We had to create a search engine where you can search for data from 88.120 Flemish SME's.
+We created a search engine where you can search for data about sustainability from 88,120 Flemish SME's.
 The information is gathered from their website and their annual report from the year 2020.
 
 ## Start the local server
